@@ -158,7 +158,69 @@ def movie_get():
     reviews_list = list(db.reviews.find({},{'_id':False}))
     return jsonify({'reviews': reviews_list})
 
+@app.route("/test/request_order")
+def request_order():
+    return render_template('request_order.html')
 
+@app.route("/test/request_partner")
+def request_partner():
+    return render_template('request_partner.html')
+
+@app.route('/test/enrollPartner', methods=['POST'])
+def enrollPartner():
+    partner_receive = request.form['partner_give']
+
+    count = list(db.partners.find({}, {'_id': False}))
+    num = cal_num(count)
+
+    partner_code = partner_receive + "partner" + str(num)
+
+    doc = {
+        "num": num,
+        "partner_name": partner_receive,
+        "partner_code": partner_code
+    }
+
+    db.partners.insert_one(doc)
+    return jsonify({"msg": "등록 완료"})
+
+def cal_num(temp_list):
+    if len(temp_list) == 0:
+        num = 1
+    else:
+        temp_num = 0
+        for cnt in temp_list:
+            if temp_num < cnt['num']:
+                temp_num = cnt['num']
+        num = temp_num + 1
+    return num
+
+@app.route("/test/findPartner", methods=['POST'])
+def findPartner():
+    code_receive = request.form["code_give"]
+    partner_info = list(db.goods.find({"partner_code": code_receive}, {'_id': False}))
+
+    return jsonify({"goods": partner_info})
+
+@app.route("/test/partnerList")
+def partnerList():
+    partner_list = list(db.partners.find({}, {"_id": False}))
+    return jsonify({"partners": partner_list})
+
+@app.route("/test/goodsEnroll", methods=['POST'])
+def goodsEnroll():
+    goods_receive = request.form["goods_give"]
+    code_receive = request.form["code_give"]
+    cnt_receive = request.form["cnt_give"]
+
+    doc = {
+        "goods_name": goods_receive,
+        "partner_code": code_receive,
+        "cnt": cnt_receive
+    }
+
+    db.goods.insert_one(doc);
+    return jsonify({"msg": "등록 완료"})
 
 if __name__ == '__main__':
     app.run('0.0.0.0', port=5000, debug=True)

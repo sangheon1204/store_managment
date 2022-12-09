@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>거래처 설정</title>
+    {%include 'COMMON/head.html'%}
+</head>
+<script>
+    $(document).ready(function () {
+        allPartnerList();
+    });
+
+    function allPartnerList() {
+        $.ajax({
+            type: 'GET',
+            url: '/test/partnerList',
+            data: {},
+            success: function (response) {
+                let rows = response['partners']
+                for(let i=0;i<rows.length;i++) {
+                    let partner = rows[i]['partner_name'];
+                    let code = rows[i]['partner_code'];
+                    let temp_html= '';
+                    temp_html = `<li><a>${partner}</a> -> <a>${code}</a></li>`
+                    $("#partners").append(temp_html);
+                }
+            }
+        });
+    }
+
+    function enrollPartner() {
+        let partner = $("#enrollPartner").val();
+
+        $.ajax({
+            type: 'POST',
+            url: '/test/enrollPartner',
+            data: {"partner_give": partner},
+            success: function (response) {
+                alert(response['msg']);
+                window.location.reload();
+            }
+        });
+    }
+
+    function findPartner() {
+        let partner_code = $("#partnerCode").val();
+        $("#goods").empty();
+
+        $.ajax({
+            type: 'POST',
+            url: '/test/findPartner',
+            data: {"code_give": partner_code},
+            success: function (response) {
+                let rows = response['goods']
+                for(let i=0;i<rows.length;i++) {
+                    let goods = rows[i]['goods_name'];
+                    let cnt = rows[i]['cnt'];
+                    let temp_html= '';
+                    temp_html = `<li><a>${goods}</a> : <a>${cnt}</a></li>`;
+                    $("#goods").append(temp_html);
+                }
+            }
+        });
+    }
+
+    function goodsEnroll() {
+        let goodsName = $("#goods_name").val();
+        let code = $("#goods_partner_code").val();
+        let count = $("#count").val();
+
+        $.ajax({
+            type: 'POST',
+            url: '/test/goodsEnroll',
+            data: {"goods_give": goodsName,
+                    "code_give": code,
+                    "cnt_give": count},
+            success: function (response) {
+                alert(response['msg']);
+            }
+        });
+    }
+</script>
+<body>
+<div class="partner_enroll">
+    <input type="text" placeholder="거래처 이름" id="enrollPartner">
+    <input type="button" value="등록" onclick="javascript:enrollPartner();">
+</div>
+<div class="partner_enter">
+    <input type="text" placeholder="거래처코드" id="partnerCode">
+    <input type="button" value="정보 확인" onclick="javascript:findPartner();">
+</div>
+<div class="goods_enroll">
+    <input type="text" placeholder="상품이름" id="goods_name">
+    <input type="text" placeholder="거래처코드" id="goods_partner_code">
+    <input type="text" placeholder="개수" id="count">
+    <input type="button" value="등록" onclick="javascript:goodsEnroll();">
+</div>
+<div class="goods_list">
+    상품목록
+    <ul id="goods">
+
+    </ul>
+</div>
+<div class="partner_list">
+    거래처코드
+    <ul id="partners">
+    </ul>
+</div>
+</body>
+</html>
