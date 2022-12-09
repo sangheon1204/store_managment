@@ -13,7 +13,7 @@
     function allPartnerList() {
         $.ajax({
             type: 'GET',
-            url: '/partnerList',
+            url: '/test/partnerList',
             data: {},
             success: function (response) {
                 let rows = response['partners']
@@ -29,14 +29,15 @@
     }
 
     function enrollPartner() {
-        var partner = $("#enrollPartner").val();
+        let partner = $("#enrollPartner").val();
 
         $.ajax({
             type: 'POST',
-            url: '/enrollPartner',
+            url: '/test/enrollPartner',
             data: {"partner_give": partner},
             success: function (response) {
                 alert(response['msg']);
+                window.location.reload();
             }
         });
     }
@@ -47,10 +48,9 @@
 
         $.ajax({
             type: 'POST',
-            url: '/findPartner',
+            url: '/test/findPartner',
             data: {"code_give": partner_code},
             success: function (response) {
-                alert(response['goods']);
                 let rows = response['goods']
                 for(let i=0;i<rows.length;i++) {
                     let goods = rows[i]['goods_name'];
@@ -70,7 +70,7 @@
 
         $.ajax({
             type: 'POST',
-            url: '/goodsEnroll',
+            url: '/test/goodsEnroll',
             data: {"goods_give": goodsName,
                     "code_give": code,
                     "cnt_give": count},

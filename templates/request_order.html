@@ -13,7 +13,7 @@
     function allPartnerList() {
         $.ajax({
             type: 'GET',
-            url: '/partnerList',
+            url: '/test/partnerList',
             data: {},
             success: function (response) {
                 let rows = response['partners']
@@ -33,7 +33,7 @@
 
         $.ajax({
             type: 'POST',
-            url: '/enrollPartner',
+            url: '/test/enrollPartner',
             data: {"partner_give": partner},
             success: function (response) {
                 alert(response['msg']);
@@ -47,7 +47,7 @@
 
         $.ajax({
             type: 'POST',
-            url: '/findPartner',
+            url: '/test/findPartner',
             data: {"code_give": partner_code},
             success: function (response) {
                 alert(response['goods']);
@@ -70,7 +70,7 @@
 
         $.ajax({
             type: 'POST',
-            url: '/goodsEnroll',
+            url: '/test/goodsEnroll',
             data: {"goods_give": goodsName,
                     "code_give": code,
                     "cnt_give": count},
