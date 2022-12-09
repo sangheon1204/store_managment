@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+            crossorigin="anonymous"></script>
+
+    <title>사이트 리뷰</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            font-family: 'Gowun Dodum', sans-serif;
+        }
+
+        .mytitle {
+            width: 100%;
+            height: 400px;
+
+            background-image:url('data:image/jpeg;base64,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');
+            background-position: center;
+            background-size: cover;
+
+            color: black;
+
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .mytitle > button {
+            width: 200px;
+            height: 50px;
+
+
+            border-radius: 50px;
+            border: 1px solid blue;
+
+            margin-top: 10px;
+        }
+
+        .mytitle > button:hover {
+            border: 2px solid white;
+        }
+
+        .mycomment {
+            color: gray;
+        }
+
+        .mycards {
+            margin: 20px auto 0px auto;
+            width: 95%;
+            max-width: 1200px;
+        }
+
+        .mypost {
+            width: 95%;
+            max-width: 500px;
+            margin: 20px auto 0px auto;
+            padding: 20px;
+            box-shadow: 0px 0px 3px 0px gray;
+
+            display: none;
+        }
+
+        .mybtns {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+
+            margin-top: 20px;
+        }
+
+        .mybtns > button {
+            margin-right: 10px;
+        }
+    </style>
+    <script>
+        $(document).ready(function () {
+            listing();
+        });
+
+        function listing() {
+            $.ajax({
+                type: 'GET',
+                url: '/review/get',
+                data: {},
+                success: function (response) {
+                    let rows = response['reviews']
+                    for (let i = 0; i < rows.length; i++) {
+
+                        let name = rows[i]['name']
+                        let star = rows[i]['star']
+                        let comment = rows[i]['comment']
+
+                        let star_image = '⭐'.repeat(star)
+
+                        let temp_html = `<div class="col">
+                                            <div class="card h-100">
+                                                <div class="card-body">
+                                                    <h5 class="card-title">${name}</h5>
+                                                    <p>${star_image}</p>
+                                                    <p class="mycomment">${comment}</p>
+                                                </div>
+                                            </div>
+                                        </div>`
+
+                        $('#cards-box').append(temp_html)
+                    }
+                }
+            })
+        }
+
+        function posting() {
+            let name = $('#name').val()
+            let star = $('#star').val()
+            let comment = $('#comment').val()
+
+            $.ajax({
+                type: 'POST',
+                url: '/review/post',
+                data: {name_give: name, star_give: star, comment_give: comment},
+                success: function (response) {
+                    alert(response['msg'])
+                    window.location.reload()
+                }
+            });
+        }
+
+        function open_box() {
+            $('#post-box').show()
+        }
+
+        function close_box() {
+            $('#post-box').hide()
+        }
+    </script>
+</head>
+
+<body>
+<div class="mytitle">
+    <h1>리뷰 작성하기</h1>
+    <button  onclick = "open_box()" type="button" class="btn btn-info">작성하기</button>
+</div>
+<div class="mypost" id="post-box">
+    <div class="form-floating mb-3">
+        <input id="name" type="email" class="form-control" placeholder="name@example.com">
+        <label>가게 이름</label>
+    </div>
+    <div class="input-group mb-3">
+        <label class="input-group-text" for="star">별점</label>
+        <select class="form-select" id="star">
+            <option selected>-- 선택하기 --</option>
+            <option value="1">⭐</option>
+            <option value="2">⭐⭐</option>
+            <option value="3">⭐⭐⭐</option>
+            <option value="4">⭐⭐⭐⭐</option>
+            <option value="5">⭐⭐⭐⭐⭐</option>
+        </select>
+    </div>
+    <div class="form-floating">
+        <textarea id="comment" class="form-control" placeholder="Leave a comment here"></textarea>
+        <label for="comment">코멘트</label>
+    </div>
+    <div class="mybtns">
+        <button onclick="posting()" type="button" class="btn btn-dark">남기기</button>
+        <button onclick="close_box()" type="button" class="btn btn-outline-dark">닫기</button>
+    </div>
+</div>
+<div class="mycards">
+    <div class="row row-cols-1 row-cols-md-4 g-4" id="cards-box">
+    </div>
+</div>
+</body>
+
+</html>
