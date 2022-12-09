@@ -52,6 +52,10 @@ def register():
     return render_template('register.html')
 
 
+@app.route('/review')
+def review():
+    return render_template('review.html')
+
 #################################
 ##  로그인을 위한 API            ##
 #################################
@@ -131,6 +135,29 @@ def api_valid():
         return jsonify({'result': 'fail', 'msg': '로그인 시간이 만료되었습니다.'})
     except jwt.exceptions.DecodeError:
         return jsonify({'result': 'fail', 'msg': '로그인 정보가 존재하지 않습니다.'})
+
+#################################
+##  리뷰 작성 및 저장             ##
+#################################
+@app.route("/review/post", methods=["POST"])
+def movie_post():
+    name_receive = request.form['name_give']
+    star_receive = request.form['star_give']
+    comment_receive = request.form['comment_give']
+
+    doc = {'name' : name_receive,
+           'star' : star_receive,
+           'comment' : comment_receive
+           }
+    db.reviews.insert_one(doc)
+
+    return jsonify({'msg': '저장 완료'})
+
+@app.route("/review/get", methods=["GET"])
+def movie_get():
+    reviews_list = list(db.reviews.find({},{'_id':False}))
+    return jsonify({'reviews': reviews_list})
+
 
 
 if __name__ == '__main__':
