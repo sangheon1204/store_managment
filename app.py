@@ -222,5 +222,23 @@ def goodsEnroll():
     db.goods.insert_one(doc);
     return jsonify({"msg": "등록 완료"})
 
+@app.route("/test/userEnroll", methods=['POST'])
+def userEnroll():
+    user_receive = request.form["user_give"]
+    menu_receive = request.form["menu_give"]
+    phone_receive = request.form["phone_give"]
+    address_receive = request.form["address_give"]
+    store_receive = request.form["store_give"]
+
+    doc = {
+        "user_name": user_receive,
+        "user_menu": menu_receive,
+        "user_phone": phone_receive,
+        "user_address": address_receive,
+        "user_store": store_receive
+    }
+    db.orders.insert_one(doc);
+    return jsonify({"msg": "등록 완료"})
+
 if __name__ == '__main__':
     app.run('0.0.0.0', port=5000, debug=True)
