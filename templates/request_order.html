@@ -14,6 +14,7 @@
         let menu = $("#menu").val();
         let phone = $("#phone").val();
         let address = $("#address").val();
+        let storeName = $("#storeName").val();
 
         $.ajax({
             type: 'POST',
@@ -21,7 +22,8 @@
             data: {"user_give": userName,
                     "menu_give": menu,
                     "phone_give": phone,
-                    "address_give": address},
+                    "address_give": address,
+                    "store_give": storeName},
             success: function (response) {
                 alert(response['msg']);
                 window.location.reload();
@@ -32,6 +34,7 @@
 <body>
 <div class="order_Info">
     <input type="text" placeholder="USERNAME" id="userName">
+    <input type="text" placeholder="STORENAME" id="storeName">
     <input type="text" placeholder="MENU" id="menu">
     <input type="text" placeholder="PHONE NUMBER" id="phone">
     <input type="text" placeholder="ADDRESS" id="address">
