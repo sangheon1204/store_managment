@@ -46,11 +46,15 @@ def login():
     msg = request.args.get("msg")
     return render_template('login.html', msg=msg)
 
+#임시
+@app.route('/temp_main')
+def temp_main():
+    return render_template("temp_main.html")
 
-@app.route('/register')
-def register():
-    return render_template('register.html')
-
+@app.route("/loginSuccess")
+def login_success():
+    return render_template("loginSuccess.html")
+#여기까지
 
 @app.route('/review')
 def review():
@@ -181,8 +185,6 @@ def check_nick():
         return jsonify({'msg' : '등록이 가능한 닉네임입니다.'})
     else:
         return jsonify({'msg' : '중복된 닉네임입니다.'})
-
-
 
 @app.route("/test/request_order")
 def request_order():
