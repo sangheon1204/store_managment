@@ -3,7 +3,7 @@
     <head>
 
         <!-- Webpage Title -->
-        <title>Hello, world!</title>
+        <title>회원 가입 페이지</title>
 
         <!-- Required meta tags -->
         <meta charset="utf-8">
@@ -38,6 +38,7 @@
                             window.location.href = '/login'
                         } else {
                             alert(response['msg'])
+                            window.location.reload()
                         }
                     }
                 })

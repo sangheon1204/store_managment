@@ -76,9 +76,11 @@ def api_register():
 
     pw_hash = hashlib.sha256(pw_receive.encode('utf-8')).hexdigest()
 
-    db.user.insert_one({'id': id_receive, 'pw': pw_hash, 'nick': nickname_receive, 'userstore' : userstore_receive})
-
-    return jsonify({'result': 'success'})
+    if(db.user.find_one({'id' : id_receive}) or db.user.find_one({'nick' : nickname_receive}) is not None):
+        return jsonify({'msg': '아이디 혹은 닉네임이 중복되었습니다.'})
+    else:
+        db.user.insert_one({'id': id_receive, 'pw': pw_hash, 'nick': nickname_receive, 'userstore': userstore_receive})
+        return jsonify({'result': 'success'})
 
 
 # [로그인 API]
