@@ -31,7 +31,7 @@ import re
 #################################
 ##  HTML을 주는 부분             ##
 #################################
-@app.route('/')
+@app.route('/', methods=['GET'])
 def home():
     token_receive = request.cookies.get('mytoken')
     try:
@@ -44,7 +44,7 @@ def home():
         return redirect(url_for("login", msg="로그인 정보가 존재하지 않습니다."))
 
 
-@app.route('/login')
+@app.route('/login', methods=['GET'])
 def login():
     msg = request.args.get("msg")
     return render_template('login.html', msg=msg)
@@ -113,7 +113,7 @@ def api_login():
         # exp에는 만료시간을 넣어줍니다. 만료시간이 지나면, 시크릿키로 토큰을 풀 때 만료되었다고 에러가 납니다.
         payload = {
             'id': id_receive,
-            'exp': datetime.datetime.utcnow() + datetime.timedelta(seconds=5)
+            'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=50)
         }
         token = jwt.encode(payload, SECRET_KEY, algorithm='HS256')
 
@@ -197,6 +197,39 @@ def check_nick():
     else:
         return jsonify({'msg' : '2'})
 
+@app.route("/order", methods=["GET","POST"])
+def order():
+    if request.method == 'GET':
+        return render_template('order.html')
+    else :
+        name = request.form["name"]
+        store_name = request.form["store_name"]
+        email = request.form["email"]
+        address = request.form["address"]
+        ingredient = request.form["ingredient"]
+        num = request.form["num"]
+        
+        doc ={
+            'name':name,
+            'store_name':store_name,
+            'email':email,
+            'address':address,
+            'ingredient':ingredient,
+            'num':num,
+        }
+        db.orders_new.insert_one(doc)
+
+        #주문한 재료의 양만큼 db에 증가시킨다
+        find_ingre = list(db.ingredient.find({'name': ingredient}, {'_id': False}))
+        new_num = int(find_ingre[0]['num']) + int(num)
+        db.ingredient.update_one({'name': ingredient}, {'$set': {'num': new_num}})
+
+        return render_template('index.html')
+
+@app.route("/order/buy")
+def order_buy():
+    print(request.form)
+
 @app.route("/test/request_order")
 def request_order():
     return render_template('request_order.html')
@@ -251,7 +284,7 @@ def goodsEnroll():
     goods_receive = request.form["goods_give"]
     code_receive = request.form["code_give"]
     cnt_receive = request.form["cnt_give"]
-
+    
     doc = {
         "goods_name": goods_receive,
         "partner_code": code_receive,
@@ -303,7 +336,7 @@ def bucket_post():
     # 입력된 요일이 잘못돼었으면
     if day_receive not in Week:
         return jsonify({'msg': '요일을 잘못 입력하셨습니다. 다시 입력하세요'})
-
+ 
     # db에서 클라이언트가 준 food_receive(음식)의 정보를 받아온다.
     menu_list = list(db.menu.find({'name': food_receive}, {'_id': False}))
 

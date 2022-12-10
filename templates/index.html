@@ -40,6 +40,22 @@
                 font-size: 3.5rem;
             }
         }
+
+        .mybox {
+            width: 70%;
+            max-width: 500px;
+            padding: 20px;
+            box-shadow: 0px 0px 10px 0px lightblue;
+            margin: 20px auto;
+        }
+
+        .mybucket {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+        }
+
     </style>
 
     <script>
@@ -47,7 +63,7 @@
             $.removeCookie('mytoken');
             alert('로그아웃!')
             window.location.href = '/login'
-      }
+        }
     </script>
 
 
@@ -56,16 +72,10 @@
 <body>
 
     <header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
-        <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3" href="#">Company name</a>
-        <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse"
-            data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false"
-            aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <input class="form-control form-control-dark w-100" type="text" placeholder="Search" aria-label="Search">
+        <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3" href="#">식당 관리 프로그램</a>
         <div class="navbar-nav">
             <div class="nav-item text-nowrap">
-                <button onclick="logout">Sign out</button>
+                <button onclick="logout()">&nbsp;&nbsp;&nbsp;&nbsp;Sign out&nbsp;&nbsp;&nbsp;&nbsp;</button>
             </div>
         </div>
     </header>
@@ -77,20 +87,24 @@
                     <ul class="nav flex-column">
                         <li class="nav-item">
                             <a class="nav-link active" aria-current="page" href="#">
-                                <span data-feather="home"></span>
-                                Dashboard
+                                <form action="/" method="GET">
+                                    <span data-feather="home"></span>
+                                    <button input type="submit" class="btn btn-outline-primary">Dashboard</button>
+                                </form>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="#">
-                                <span data-feather="file"></span>
-                                Orders
+                                <form action="/order" method="GET">
+                                    <span data-feather="file"></span>
+                                    <button input type="submit" class="btn btn-outline-primary">Orders</button>
+                                </form>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="#">
                                 <span data-feather="shopping-cart"></span>
-                                Products
+                                <span onclick="reload()">Products</span>
                             </a>
                         </li>
                         <li class="nav-item">
@@ -153,18 +167,68 @@
                 <div
                     class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
                     <h1 class="h2">Dashboard</h1>
-                    <div class="btn-toolbar mb-2 mb-md-0">
-                        <div class="btn-group me-2">
-                            <button type="button" class="btn btn-sm btn-outline-secondary">Share</button>
-                            <button type="button" class="btn btn-sm btn-outline-secondary">Export</button>
-                        </div>
-                        <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle">
-                            <span data-feather="calendar"></span>
-                            This week
-                        </button>
+                </div>
+
+                <div class="mybox">
+                    <div class="mybucket">
+                        <input id="menu" class="form-control" type="text" placeholder="판매된 메뉴를 입력하세요">
+                        <select class="form-select form-select-lg mb-3" id="day">
+                            <option selected>요일을 선택하세요</option>
+                            <option value="월">월</option>
+                            <option value="화">화</option>
+                            <option value="수">수</option>
+                            <option value="목">목</option>
+                            <option value="금">금</option>
+                            <option value="토">토</option>
+                            <option value="일">일</option>
+                        </select>
+                        <button onclick="save_bucket()" type="button" class="btn btn-outline-primary">입력</button>
                     </div>
                 </div>
 
+                <script>
+                    function save_bucket() {
+                        let menu = $('#menu').val()
+                        let day = $('#day').val()
+                
+                        $.ajax({
+                            type: "POST",
+                            url: "/bucket",
+                            data: {menu_give: menu, day_give: day},
+                            success: function (response) {
+                                alert(response["msg"])
+                                window.location.reload()
+                            }
+                        });
+                    }
+                </script>   
+                
+                <script>
+                    function reload() {
+                        $.ajax({
+                            type: "GET",
+                            url: "/",
+                            data: {},
+                            success: function (response) {
+                                window.location.reload()
+                            }
+                        });
+                    }
+                </script>
+                <form action="/result" method="GET">
+                    <script>
+                        function orders() {
+                            $.ajax({
+                                type: "GET",
+                                url: "/login",
+                                data: {},
+                                success: function (response) {
+                                    alert("afasf")
+                                }
+                            });
+                        }                    
+                    </script>
+                </form>
                 <!--요일별 판매량 그래프-->
                 <div style="width:70%;margin:auto">
                     <canvas id="line-chart"></canvas>
