@@ -89,6 +89,7 @@ def api_register():
             return jsonify({'msg': '아이디 혹은 닉네임이 중복되었습니다.'})
         else:
             db.user.insert_one({'id': id_receive, 'pw': pw_hash, 'nick': nickname_receive, 'userstore': userstore_receive})
+    return jsonify({'result': 'success'})
 
 
 # [로그인 API]
