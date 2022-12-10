@@ -79,7 +79,7 @@ def api_register():
 
     pw_hash = hashlib.sha256(pw_receive.encode('utf-8')).hexdigest()
 
-    if((len(pw_receive) < 8 or len(pw_receive) >21) and not re.findall('[0-9]', pw_receive) and not
+    if((len(pw_receive) < 8 and len(pw_receive) >21) and not re.findall('[0-9]', pw_receive) and not
     (re.findall('[a-z]', pw_receive) or not re.findall('[A-Z]',pw_receive))):
         return jsonify({'msg' : '비밀번호는 기준에 맞지 않습니다.' })
     elif not re.findall('[~!@#$%^&*(),<>./?]', pw_receive):
