@@ -127,6 +127,10 @@
     </style>
 </head>
 <script>
+    $(document).ready(function(){
+
+    });
+
     function show() {
         document.querySelector(".popup_layer").className = "popup_layer show";
     }
@@ -202,9 +206,9 @@
             },
             success: function (response) {
                 if (response['msg'] == '1') {
-                    $("#NickDuplicate").text("등록 가능한 아이디입니다.");
+                    $("#NickDuplicate").text("등록 가능한 닉네임입니다.");
                 } else
-                    $("#NickDuplicate").text("중복된 아이디입니다.");
+                    $("#NickDuplicate").text("중복된 닉네임입니다.");
             }
         })
     }
