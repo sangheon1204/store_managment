@@ -174,9 +174,9 @@ def check_id():
     id_receive = request.form['id_give']
     user = db.user.find_one({'id': id_receive})
     if( user == None):
-        return jsonify({'msg' : '등록이 가능한 아이디입니다.'})
+        return jsonify({'msg' : '1'})
     else:
-        return jsonify({'msg' : '중복된 아이디입니다.'})
+        return jsonify({'msg' : '2'})
 
 
 @app.route("/register/check_nick", methods=["POST"])
@@ -184,9 +184,9 @@ def check_nick():
     nick_receive = request.form['nick_give']
     user = db.user.find_one({'nick': nick_receive})
     if( user == None):
-        return jsonify({'msg' : '등록이 가능한 닉네임입니다.'})
+        return jsonify({'msg' : '1'})
     else:
-        return jsonify({'msg' : '중복된 닉네임입니다.'})
+        return jsonify({'msg' : '2'})
 
 @app.route("/test/request_order")
 def request_order():

@@ -185,7 +185,10 @@
                 id_give: $('#resUserId').val()
             },
             success: function (response) {
-                alert(response['msg'])
+                if (response['msg'] == '1') {
+                    $("#IdDuplicate").text("등록 가능한 아이디입니다.");
+                } else
+                    $("#IdDuplicate").text("중복된 아이디입니다.");
             }
         })
     }
@@ -198,7 +201,10 @@
                 nick_give: $('#resUserNick').val()
             },
             success: function (response) {
-                alert(response['msg'])
+                if (response['msg'] == '1') {
+                    $("#NickDuplicate").text("등록 가능한 아이디입니다.");
+                } else
+                    $("#NickDuplicate").text("중복된 아이디입니다.");
             }
         })
     }
@@ -235,7 +241,7 @@
                 <div style="margin-top:20px; margin-left:20px;"><h1>회원가입 <span style="font-size:15px;">SIGN UP</span>
                 </h1></div>
                 <div class="signUpBtn" style="margin-left:25%; margin-top:20px;">
-                    <span id="IdDuplicate">aaa</span>
+                    <span id="IdDuplicate"></span>
                     <div class="input-group mb-3">
                         <input type="text" class="form-control" placeholder="My ID" aria-label="Recipient's username"
                                aria-describedby="button-addon2" id="resUserId">
@@ -243,7 +249,7 @@
                     </div>
                     <input type="text" class="form-control" placeholder="My PassWord" aria-label="Username"
                            aria-describedby="basic-addon1" style="margin-top:20px;" id="resUserPw">
-                    <span style="margin-top:20px;" id="NickDuplicate">aaa</span>
+                    <span style="margin-top:20px;" id="NickDuplicate"></span>
                     <div class="input-group mb-3">
                         <input type="text" class="form-control" placeholder="My NickName"
                                aria-label="Recipient's username" aria-describedby="button-addon2" id="resUserNick">
