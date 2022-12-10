@@ -24,6 +24,9 @@ import datetime
 # 그렇지 않으면, 개발자(=나)가 회원들의 비밀번호를 볼 수 있으니까요.^^;
 import hashlib
 
+#re.함수를 사용하기 위해 추가하였습니다.
+import re
+
 
 #################################
 ##  HTML을 주는 부분             ##
@@ -76,11 +79,16 @@ def api_register():
 
     pw_hash = hashlib.sha256(pw_receive.encode('utf-8')).hexdigest()
 
-    if(db.user.find_one({'id' : id_receive}) or db.user.find_one({'nick' : nickname_receive}) is not None):
-        return jsonify({'msg': '아이디 혹은 닉네임이 중복되었습니다.'})
+    if((len(pw_receive) < 8 or len(pw_receive) >21) and not re.findall('[0-9]', pw_receive) and not
+    (re.findall('[a-z]', pw_receive) or not re.findall('[A-Z]',pw_receive))):
+        return jsonify({'msg' : '비밀번호는 기준에 맞지 않습니다.' })
+    elif not re.findall('[~!@#$%^&*(),<>./?]', pw_receive):
+        return jsonify({'msg' : '비밀번호는 적어도 1개 이상의 특수문자를 포함해야 합니다'})
     else:
-        db.user.insert_one({'id': id_receive, 'pw': pw_hash, 'nick': nickname_receive, 'userstore': userstore_receive})
-        return jsonify({'result': 'success'})
+        if(db.user.find_one({'id' : id_receive}) or db.user.find_one({'nick' : nickname_receive}) is not None):
+            return jsonify({'msg': '아이디 혹은 닉네임이 중복되었습니다.'})
+        else:
+            db.user.insert_one({'id': id_receive, 'pw': pw_hash, 'nick': nickname_receive, 'userstore': userstore_receive})
 
 
 # [로그인 API]
