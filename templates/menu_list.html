@@ -13,6 +13,27 @@
     {%include 'COMMON/head.html'%}
     {%include 'COMMON/font.html'%}
 </head>
+<script>
+    function menu_enroll() {
+        menu = $("#menu_input").val();
+
+        $.ajax({
+            type: "POST",
+            url: "/menu_list/menu_enroll",
+            data: {
+                "menu_give": menu
+            },
+            success: function (response) {
+                alert(response['msg']);
+                window.location.reload();
+            }
+        })
+    }
+
+    function ingre_enroll() {
+
+    }
+</script>
 <body>
 <header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
     <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3" href="/">Company name</a>
@@ -119,10 +140,11 @@
                         </div>
                         <div class="card-body">
                             <div class="input-group mb-3">
-                                <span class="input-group-text" id="inputGroup-sizing-default">메뉴</span>
+                                <span class="input-group-text">메뉴</span>
                                 <input type="text" class="form-control" aria-label="Sizing example input"
-                                       aria-describedby="inputGroup-sizing-default">
+                                       aria-describedby="inputGroup-sizing-default" id="menu_input">
                             </div>
+                            <button type="button" class="btn btn-secondary" style="float:right;" onclick="javascript:menu_enroll();">등록</button>
                         </div>
                     </div>
                     <div class="card shadow mb-4">
@@ -131,15 +153,16 @@
                         </div>
                         <div class="card-body">
                             <div class="input-group mb-3">
-                                <span class="input-group-text" id="inputGroup-sizing-default">메뉴</span>
+                                <span class="input-group-text">메뉴</span>
                                 <input type="text" class="form-control" aria-label="Sizing example input"
-                                       aria-describedby="inputGroup-sizing-default">
+                                       aria-describedby="inputGroup-sizing-default" id="ingre_input_menu">
                             </div>
                             <div class="input-group mb-3">
-                                <span class="input-group-text" id="inputGroup-sizing-default">재료</span>
+                                <span class="input-group-text">재료</span>
                                 <input type="text" class="form-control" aria-label="Sizing example input"
-                                       aria-describedby="inputGroup-sizing-default">
+                                       aria-describedby="inputGroup-sizing-default" id="ingre_input">
                             </div>
+                            <button type="button" class="btn btn-secondary" style="float:right;" onclick="javascript:ingre_enroll();">등록</button>
                         </div>
                     </div>
                 </div>

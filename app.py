@@ -113,7 +113,7 @@ def api_login():
         # exp에는 만료시간을 넣어줍니다. 만료시간이 지나면, 시크릿키로 토큰을 풀 때 만료되었다고 에러가 납니다.
         payload = {
             'id': id_receive,
-            'exp': datetime.datetime.utcnow() + datetime.timedelta(seconds=5)
+            'exp': datetime.datetime.utcnow() + datetime.timedelta(days=1)
         }
         token = jwt.encode(payload, SECRET_KEY, algorithm='HS256')
 
@@ -373,6 +373,19 @@ def order_list():
 @app.route('/price_setting')
 def price_setting():
     return render_template("price_setting.html")
+
+@app.route('/menu_list/menu_enroll', methods=['POST'])
+def menu_enroll():
+    token_receive = request.cookies.get('mytoken')
+    payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+
+    menu_receive = request.form['menu_give']
+
+    db.user_menu.insert_one({'user_id': payload['id'],'menu': menu_receive})
+
+    return jsonify({'msg': '등록 완료'})
+
+
 
 if __name__ == '__main__':
     app.run('0.0.0.0', port=5000, debug=True)
