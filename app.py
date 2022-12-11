@@ -381,6 +381,9 @@ def price_setting():
 def menu_enroll():
     menu_receive = request.form['menu_give']
     payload = login_check()
+    menu_check = db.user_menu.find_one({"user_id": payload['id'], 'menu': menu_receive}, {'_id': False})
+    if not menu_check is None:
+        return jsonify({"msg": "메뉴가 등록되어있습니다."})
     db.user_menu.insert_one({'user_id': payload['id'], 'menu': menu_receive})
     return jsonify({"msg": "등록 완료"})
 
