@@ -226,17 +226,6 @@ def enrollPartner():
     db.partners.insert_one(doc)
     return jsonify({"msg": "등록 완료"})
 
-def cal_num(temp_list):
-    if len(temp_list) == 0:
-        num = 1
-    else:
-        temp_num = 0
-        for cnt in temp_list:
-            if temp_num < cnt['num']:
-                temp_num = cnt['num']
-        num = temp_num + 1
-    return num
-
 @app.route("/test/findPartner", methods=['POST'])
 def findPartner():
     code_receive = request.form["code_give"]
@@ -282,7 +271,6 @@ def userEnroll():
     db.orders.insert_one(doc);
     return jsonify({"msg": "등록 완료"})
 
-##메인페이지 구성
 @app.route("/bucket", methods=["GET"])
 def bucket_get():
     # 음식의 모든 정보를 html로 넘겨준다
@@ -292,7 +280,7 @@ def bucket_get():
 
     return jsonify({'menu': food_list, 'ingredient': ingredient_list})
 
-
+##메인페이지 구성
 @app.route("/bucket", methods=["POST"])
 def bucket_post():
     food_receive = request.form['menu_give']
@@ -361,6 +349,7 @@ def bucket_post():
 
     return jsonify({'msg': '등록완료'})
 
+
 @app.route('/partner_list')
 def partner_list():
     return render_template("partner_list.html")
@@ -418,6 +407,21 @@ def menu_show():
     menu_list = list(db.user_menu.find({'user_id': payload['id']},{'_id':False}))
     return jsonify({"menu_show": menu_list})
 
+if __name__ == '__main__':
+    app.run('0.0.0.0', port=5000, debug=True)
+
+#기능 함수 모음
+def cal_num(temp_list):
+    if len(temp_list) == 0:
+        num = 1
+    else:
+        temp_num = 0
+        for cnt in temp_list:
+            if temp_num < cnt['num']:
+                temp_num = cnt['num']
+        num = temp_num + 1
+    return num
+
 def login_check():
     token_receive = request.cookies.get('mytoken')
     try:
@@ -427,6 +431,3 @@ def login_check():
         return redirect(url_for("login", msg="로그인 시간이 만료되었습니다."))
     except jwt.exceptions.DecodeError:
         return redirect(url_for("login", msg="로그인 정보가 존재하지 않습니다."))
-
-if __name__ == '__main__':
-    app.run('0.0.0.0', port=5000, debug=True)
