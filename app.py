@@ -27,6 +27,9 @@ import hashlib
 #re.함수를 사용하기 위해 추가하였습니다.
 import re
 
+#json 내장 모듈을 사용하기 위함
+import json
+
 
 #################################
 ##  HTML을 주는 부분             ##
@@ -113,7 +116,7 @@ def api_login():
         # exp에는 만료시간을 넣어줍니다. 만료시간이 지나면, 시크릿키로 토큰을 풀 때 만료되었다고 에러가 납니다.
         payload = {
             'id': id_receive,
-            'exp': datetime.datetime.utcnow() + datetime.timedelta(seconds=5)
+            'exp': datetime.datetime.utcnow() + datetime.timedelta(days=1)
         }
         token = jwt.encode(payload, SECRET_KEY, algorithm='HS256')
 
@@ -358,6 +361,72 @@ def bucket_post():
 
     return jsonify({'msg': '등록완료'})
 
+@app.route('/partner_list')
+def partner_list():
+    return render_template("partner_list.html")
+
+@app.route('/menu_list')
+def menu_list():
+    return render_template("menu_list.html")
+
+@app.route('/order_list')
+def order_list():
+    return render_template("order_list.html")
+
+@app.route('/price_setting')
+def price_setting():
+    return render_template("price_setting.html")
+
+@app.route('/menu_list/menu_enroll', methods=['POST'])
+def menu_enroll():
+    menu_receive = request.form['menu_give']
+    payload = login_check()
+    menu_check = db.user_menu.find_one({"user_id": payload['id'], 'menu': menu_receive}, {'_id': False})
+    if not menu_check is None:
+        return jsonify({"msg": "메뉴가 등록되어있습니다."})
+    db.user_menu.insert_one({'user_id': payload['id'], 'menu': menu_receive})
+    return jsonify({"msg": "등록 완료"})
+
+@app.route('/menu_list/ingredients_enroll', methods=['POST'])
+def ingredients_enroll():
+    menu_receive = request.form['menu_give']
+    ingredients_receive = request.form['ingre_give']
+    count = 0
+    payload = login_check()
+    ingre_count = db.user_menu.find_one({"user_id": payload['id'], 'menu': menu_receive},{'_id': False})
+    if ingre_count == None:
+        return jsonify({"msg": "메뉴가 없습니다."})
+    print([ k for k in ingre_count.keys() if 'ingredient_' in k])
+    if [ k for k in ingre_count.keys() if 'ingredient_' in k] == []:
+        count = 0
+    else:
+        for a in [ k for k in ingre_count.keys() if 'ingredient_' in k]:
+            count += 1
+
+    db.user_menu.update_one(
+        {"user_id": payload['id'], 'menu': menu_receive},
+        {"$set" :
+             {"ingredient_"+str(count): ingredients_receive}
+         },
+        True
+    )
+    return jsonify({"msg": "등록 완료"})
+
+@app.route('/menu_list/menu_show')
+def menu_show():
+    payload = login_check()
+    menu_list = list(db.user_menu.find({'user_id': payload['id']},{'_id':False}))
+    return jsonify({"menu_show": menu_list})
+
+def login_check():
+    token_receive = request.cookies.get('mytoken')
+    try:
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+        return payload
+    except jwt.ExpiredSignatureError:
+        return redirect(url_for("login", msg="로그인 시간이 만료되었습니다."))
+    except jwt.exceptions.DecodeError:
+        return redirect(url_for("login", msg="로그인 정보가 존재하지 않습니다."))
 
 if __name__ == '__main__':
     app.run('0.0.0.0', port=5000, debug=True)
