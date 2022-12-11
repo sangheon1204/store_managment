@@ -27,6 +27,9 @@ import hashlib
 #re.함수를 사용하기 위해 추가하였습니다.
 import re
 
+#json 내장 모듈을 사용하기 위함
+import json
+
 
 #################################
 ##  HTML을 주는 부분             ##
@@ -376,16 +379,45 @@ def price_setting():
 
 @app.route('/menu_list/menu_enroll', methods=['POST'])
 def menu_enroll():
-    token_receive = request.cookies.get('mytoken')
-    payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
-
     menu_receive = request.form['menu_give']
+    payload = login_check()
+    db.user_menu.insert_one({'user_id': payload['id'], 'menu': menu_receive})
+    return jsonify({"msg": "등록 완료"})
 
-    db.user_menu.insert_one({'user_id': payload['id'],'menu': menu_receive})
+@app.route('/menu_list/ingredients_enroll', methods=['POST'])
+def ingredients_enroll():
+    menu_receive = request.form['menu_give']
+    ingredients_receive = request.form['ingre_give']
+    count = 0
+    payload = login_check()
+    ingre_count = db.user_menu.find_one({"user_id": payload['id'], 'menu': menu_receive},{'_id': False})
+    if ingre_count == None:
+        return jsonify({"msg": "메뉴가 없습니다."})
+    print([ k for k in ingre_count.keys() if 'ingredient_' in k])
+    if [ k for k in ingre_count.keys() if 'ingredient_' in k] == []:
+        count = 0
+    else:
+        for a in [ k for k in ingre_count.keys() if 'ingredient_' in k]:
+            count += 1
 
-    return jsonify({'msg': '등록 완료'})
+    db.user_menu.update_one(
+        {"user_id": payload['id'], 'menu': menu_receive},
+        {"$set" :
+             {"ingredient_"+str(count): ingredients_receive}
+         },
+        True
+    )
+    return jsonify({"msg": "등록 완료"})
 
-
+def login_check():
+    token_receive = request.cookies.get('mytoken')
+    try:
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+        return payload
+    except jwt.ExpiredSignatureError:
+        return redirect(url_for("login", msg="로그인 시간이 만료되었습니다."))
+    except jwt.exceptions.DecodeError:
+        return redirect(url_for("login", msg="로그인 정보가 존재하지 않습니다."))
 
 if __name__ == '__main__':
     app.run('0.0.0.0', port=5000, debug=True)

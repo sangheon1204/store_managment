@@ -31,7 +31,21 @@
     }
 
     function ingre_enroll() {
+        menu = $('#ingre_input_menu').val();
+        ingredients = $('#ingre_input').val();
 
+        $.ajax({
+            type: "POST",
+            url: "/menu_list/ingredients_enroll",
+            data: {
+                "menu_give": menu,
+                "ingre_give":ingredients
+            },
+            success: function (response) {
+                alert(response['msg']);
+                window.location.reload();
+            }
+        })
     }
 </script>
 <body>
