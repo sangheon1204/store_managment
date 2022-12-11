@@ -407,9 +407,6 @@ def menu_show():
     menu_list = list(db.user_menu.find({'user_id': payload['id']},{'_id':False}))
     return jsonify({"menu_show": menu_list})
 
-if __name__ == '__main__':
-    app.run('0.0.0.0', port=5000, debug=True)
-
 #기능 함수 모음
 def cal_num(temp_list):
     if len(temp_list) == 0:
@@ -431,3 +428,6 @@ def login_check():
         return redirect(url_for("login", msg="로그인 시간이 만료되었습니다."))
     except jwt.exceptions.DecodeError:
         return redirect(url_for("login", msg="로그인 정보가 존재하지 않습니다."))
+
+if __name__ == '__main__':
+    app.run('0.0.0.0', port=5000, debug=True)
