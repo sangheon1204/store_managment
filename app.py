@@ -412,6 +412,12 @@ def ingredients_enroll():
     )
     return jsonify({"msg": "등록 완료"})
 
+@app.route('/menu_list/menu_show')
+def menu_show():
+    payload = login_check()
+    menu_list = list(db.user_menu.find({'user_id': payload['id']},{'_id':False}))
+    return jsonify({"menu_show": menu_list})
+
 def login_check():
     token_receive = request.cookies.get('mytoken')
     try:

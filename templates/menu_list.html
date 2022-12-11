@@ -14,8 +14,15 @@
     {%include 'COMMON/font.html'%}
 </head>
 <script>
+    $(document).ready(function(){
+        menu_list();
+    });
+
     function menu_enroll() {
         menu = $("#menu_input").val();
+        if (menu == '')
+            alert("메뉴를 입력해주세요.");
+            return
 
         $.ajax({
             type: "POST",
@@ -44,6 +51,51 @@
             success: function (response) {
                 alert(response['msg']);
                 window.location.reload();
+            }
+        })
+    }
+
+    function menu_list() {
+        $.ajax({
+            type: "GET",
+            url: "/menu_list/menu_show",
+            data: {},
+            success: function (response) {
+                let rows = response['menu_show']
+                for (let i = 0;i<rows.length;i++) {
+                    let menu_title = rows[i]['menu'];
+                    let ingre_arr = new Array();
+                    console.log(rows[i]);
+                    for (let j=0; j<Object.keys(rows[i]).length-2;j++) {
+                        ingre_arr[j] = rows[i][`ingredient_${j}`];
+                        console.log(1);
+                    }
+                    let temp_html = '';
+                    let temp_html2 = '';
+                    let content = '';
+                    temp_html = `<div class="accordion" id="object${i}">
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="headingOne">
+                                        <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                                data-bs-target="#collapseOne${i}" aria-expanded="true"
+                                                aria-controls="collapseOne${i}">
+                                            ${menu_title}
+                                        </button>
+                                    </h2>
+                                    <div id="collapseOne${i}" class="accordion-collapse collapse show"
+                                         aria-labelledby="headingOne" data-bs-parent="#object${i}">
+                                        <div class="accordion-body" id="accordion-body">
+                                        `;
+                    $("#card-body").append(temp_html);
+                    for (let o = 0; o<ingre_arr.length;o++) {
+                        content = `<li>${ingre_arr[o]}</li>`;
+                        $("#accordion-body").append(content);
+                    }
+                    temp_html2 = `</div>
+                                </div>
+                                </div>`;
+                    $("#card-body").append(temp_html2);
+                }
             }
         })
     }
@@ -186,30 +238,7 @@
                         <div class="card-header py-3">
                             <h6 class="m-0 font-weight-bold text-primary">등록된 메뉴</h6>
                         </div>
-                        <div class="card-body">
-                            <div class="accordion" id="accordionExample">
-                                <div class="accordion-item">
-                                    <h2 class="accordion-header" id="headingOne">
-                                        <button class="accordion-button" type="button" data-bs-toggle="collapse"
-                                                data-bs-target="#collapseOne" aria-expanded="true"
-                                                aria-controls="collapseOne">
-                                            Accordion Item #1
-                                        </button>
-                                    </h2>
-                                    <div id="collapseOne" class="accordion-collapse collapse show"
-                                         aria-labelledby="headingOne" data-bs-parent="#accordionExample">
-                                        <div class="accordion-body">
-                                            <strong>This is the first item's accordion body.</strong> It is shown by
-                                            default, until the collapse plugin adds the appropriate classes that we use
-                                            to style each element. These classes control the overall appearance, as well
-                                            as the showing and hiding via CSS transitions. You can modify any of this
-                                            with custom CSS or overriding our default variables. It's also worth noting
-                                            that just about any HTML can go within the <code>.accordion-body</code>,
-                                            though the transition does limit overflow.
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                        <div class="card-body" id="card-body">
                         </div>
                     </div>
                 </div>
