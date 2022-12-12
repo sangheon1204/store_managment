@@ -5,8 +5,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LOGIN</title>
-    {%include 'COMMON/head.html'%}
-    {%include 'COMMON/font.html'%}
+    {% include 'COMMON/head.html' %}
+    {% include 'COMMON/font.html' %}
     <style>
         body {
             background-image: url("static/spaghetti-g01c5ec5fc_1920.jpg");
@@ -124,8 +124,9 @@
             flex-direction: column;
             color: blue;
         }
+
         .id {
-            text-align:center;
+            text-align: center;
         }
 
         .pw {
@@ -134,7 +135,7 @@
     </style>
 </head>
 <script>
-    $(document).ready(function(){
+    $(document).ready(function () {
 
     });
 
@@ -217,19 +218,20 @@
             }
         })
     }
+
     function check_pw() {
         pw1 = $('#resUserPw1').val()
         pw2 = $('#resUserPw2').val()
-        if( pw2 == '') {
+        if (pw2 == '') {
             $('#PwCheck').text('')
-        }else{
+        } else {
             if (pw1 == pw2) {
                 document.getElementById('PwCheck').style.color = 'blue'
                 $(`#PwCheck`).text('입력하신 비밀번호가 일치합니다.')
             } else {
                 document.getElementById('PwCheck').style.color = 'red'
                 $('#PwCheck').text('입력하신 비밀번호가 다릅니다.')
-        }
+            }
         }
     }
 
@@ -237,7 +239,7 @@
         pw = $('#resUserPw1').val()
         if (pw == '') {
             $('#PwForm').text('')
-        }else{
+        } else {
             let number = pw.search(/[0-9]/g);
             let english = pw.search(/[a-z]/ig);
             let spece = pw.search(/[`~!@@#$%^&*|₩₩₩'₩";:₩/?]/gi);
@@ -246,7 +248,7 @@
             } else if (number < 0 || english < 0 || spece < 0) {
                 document.getElementById('PwForm').style.color = 'red'
                 $('#PwForm').text('영문, 숫자, 특수문자를 혼합하여 입력해주세요')
-            }else{
+            } else {
                 document.getElementById('PwForm').style.color = 'blue'
                 $('#PwForm').text('올바른 형식입니다. 아래에 한번 더 입력해주세요')
 
@@ -257,16 +259,26 @@
     function id_button() {
         if ($('#resUserId').val() == '') {
             $('#IdDuplBtn').attr('disabled', true)
-        }else {
-             $('#IdDuplBtn').attr('disabled', false)
+        } else {
+            $('#IdDuplBtn').attr('disabled', false)
         }
     }
 
-        function nick_button() {
+    function nick_button() {
         if ($('#resUserNick').val() == undefined) {
             $('#NickDuplBtn').attr('disabled', true)
-        }else {
-             $('#NickDuplBtn').attr('disabled', false)
+        } else {
+            $('#NickDuplBtn').attr('disabled', false)
+        }
+    }
+
+    function store_check() {
+        if ($('#resUserStore').val() == '') {
+            document.getElementById('storeCheck').style.color = 'red'
+            $('#storeCheck').text('입력해주세요')
+        } else {
+            document.getElementById('storeCheck').style.color = 'blue'
+            $('#storeCheck').text('등록버튼을 눌러주세요')
         }
     }
 
@@ -283,8 +295,8 @@
         <h1 class="logo2" style="color:white;">MEMBER LOGIN</h1>
     </div>
     <form action="javascript:login();" class="loginForm">
-        <input class ="id" type="text" placeholder="USERNAME" id="userid">
-        <input class ="pw" type="password" placeholder="PASSWORD" id="userpw">
+        <input class="id" type="text" placeholder="USERNAME" id="userid">
+        <input class="pw" type="password" placeholder="PASSWORD" id="userpw">
     </form>
     <div class="loginBtn">
         <input type="submit" value="LOGIN" onclick="login()">
@@ -294,45 +306,61 @@
 <div class="popup_layer">
     <div class="window">
         <div class="popup">
-            <a href="" onclick="javascript:close();" style="color:black; margin-left:5px;">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-lg"
-                     viewBox="0 0 16 16">
-                    <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8 2.146 2.854Z"/>
-                </svg>
-            </a>
-            <div>
-                <div style="margin-top:20px; margin-left:20px;"><h1>회원가입 <span style="font-size:15px;">SIGN UP</span>
-                </h1></div>
-                <div class="signUpBtn" style="margin-left:25%; margin-top:20px;">
-                    <label style = "font-size:25px; color:black">아이디</label>
-                    <div class="input-group mb-3">
-                        <input type="text" class="form-control" placeholder="영문+숫자" aria-label="Recipient's username"
-                               aria-describedby="button-addon2" id="resUserId" onkeyup = "id_button()">
-                        <button  disabled class="btn btn-outline-secondary" type="button" id="IdDuplBtn" onclick="check_id()">중복확인</button>
+                <a href="" onclick="javascript:close();" style="color:black; margin-left:5px;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                         class="bi bi-x-lg"
+                         viewBox="0 0 16 16">
+                        <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8 2.146 2.854Z"/>
+                    </svg>
+                </a>
+                <div>
+                    <div style="margin-top:20px; margin-left:20px;"><h1>회원가입 <span
+                            style="font-size:15px;">SIGN UP</span>
+                    </h1></div>
+                    <div class="signUpBtn" style="margin-left:25%; margin-top:20px;">
+                        <label style="font-size:20px; color:black">아이디</label>
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control" placeholder="영문+숫자"
+                                   aria-label="Recipient's username"
+                                   aria-describedby="button-addon2" id="resUserId" onkeyup="id_button()">
+                            <button disabled class="btn btn-outline-secondary" type="button" id="IdDuplBtn"
+                                    onclick="check_id()">중복확인
+                            </button>
+                        </div>
+                        <span id="IdDuplicate"></span>
+                        <label style="font-size:20px; color:black">비밀번호</label>
+                        <input type="password" class="form-control" placeholder="영문+숫자+특수기호(8~21자)"
+                               aria-label="Username"
+                               aria-describedby="basic-addon1" style="margin:20px 0px 10px 0px;" id="resUserPw1"
+                               onkeyup="check_pw(), check_pw_form()">
+                        <span id="PwForm" style="margin-bottom:20px; color:red;"></span>
+                        <div class="input-group mb-3">
+                            <input type="password" class="form-control" placeholder="다시 한번 입력해주세요."
+                                   aria-label="Username"
+                                   aria-describedby="basic-addon1" style="margin:0px 0px 0px 0px;" id="resUserPw2"
+                                   onkeyup="check_pw()">
+                        </div>
+                        <span id="PwCheck" style="margin-bottom:10px; color:red;"></span>
+                        <label style="font-size:20px; color:black">닉네임</label>
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control" placeholder="사용하실 닉네임을 입력해주세요"
+                                   aria-label="Recipient's username" aria-describedby="button-addon2" id="resUserNick"
+                                   onkeyup='nick_button()'>
+                            <button disabled class="btn btn-outline-secondary" type="button" id="NickDuplBtn"
+                                    onclick="check_nick()">중복확인
+                            </button>
+                        </div>
+                        <span id="NickDuplicate"></span>
+                        <label style="font-size:20px; color:black">가게이름</label>
+                        <input type="text" class="form-control" placeholder="가게 이름" aria-label="Username"
+                               aria-describedby="basic-addon1" style="margin-top:20px;" id="resUserStore"
+                               onkeyup="store_check()">
+                        <span style="color:red" id="storeCheck" style="margin-top:10px">입력해주세요</span>
+                        <button id="register_button"  type="submit" class="btn btn-primary"
+                                style="margin-top:20px;" onclick="register()">등록
+                        </button>
                     </div>
-                    <span id="IdDuplicate"></span>
-                    <label style = "font-size:25px; color:black">비밀번호</label>
-                    <input type="password" class="form-control" placeholder="영문+숫자+특수기호(8~21자)" aria-label="Username"
-                           aria-describedby="basic-addon1" style="margin:20px 0px 20px 0px;"  id="resUserPw1" onkeyup="check_pw(), check_pw_form()">
-                    <span id="PwForm" style ="margin-bottom:20px; color:red;"></span>
-                    <div class="input-group mb-3">
-                        <input type="password" class="form-control" placeholder="다시 한번 입력해주세요." aria-label="Username"
-                           aria-describedby="basic-addon1" style="margin:0px 0px 0px 0px;" id="resUserPw2"  onkeyup="check_pw()">
-                    </div>
-                    <span id="PwCheck" style ="margin-bottom:20px; color:red;"></span>
-                    <label style = "font-size:25px; color:black">닉네임</label>
-                    <div class="input-group mb-3">
-                        <input type="text" class="form-control" placeholder="사용하실 닉네임을 입력해주세요"
-                               aria-label="Recipient's username" aria-describedby="button-addon2" id="resUserNick" onkeyup='nick_button()'>
-                        <button disabled class="btn btn-outline-secondary" type="button" id="NickDuplBtn" onclick="check_nick()">중복확인</button>
-                    </div>
-                    <span id="NickDuplicate"></span>
-                    <label style = "font-size:25px; color:black">가게이름</label>
-                    <input type="text" class="form-control" placeholder="가게 이름" aria-label="Username"
-                           aria-describedby="basic-addon1" style="margin-top:20px;" id="resUserStore">
-                    <button type="button"  class="btn btn-primary" style="margin-top:20px;" onclick="register()">등록</button>
                 </div>
-            </div>
         </div>
     </div>
 </div>
