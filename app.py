@@ -46,21 +46,10 @@ def home():
     except jwt.exceptions.DecodeError:
         return redirect(url_for("login", msg="로그인 정보가 존재하지 않습니다."))
 
-
 @app.route('/login')
 def login():
     msg = request.args.get("msg")
     return render_template('login.html', msg=msg)
-
-#임시
-@app.route('/temp_main')
-def temp_main():
-    return render_template("temp_main.html")
-
-@app.route("/loginSuccess")
-def login_success():
-    return render_template("loginSuccess.html")
-#여기까지
 
 @app.route('/review')
 def review():
@@ -349,7 +338,7 @@ def bucket_post():
 
     return jsonify({'msg': '등록완료'})
 
-
+#사이드바 href
 @app.route('/partner_list')
 def partner_list():
     return render_template("partner_list.html")
@@ -366,6 +355,11 @@ def order_list():
 def price_setting():
     return render_template("price_setting.html")
 
+@app.route('/restaurant_code')
+def restaurant_code():
+    return render_template("restaurant_code.html")
+
+#메뉴 목록
 @app.route('/menu_list/menu_enroll', methods=['POST'])
 def menu_enroll():
     menu_receive = request.form['menu_give']
@@ -406,6 +400,12 @@ def menu_show():
     payload = login_check()
     menu_list = list(db.user_menu.find({'user_id': payload['id']},{'_id':False}))
     return jsonify({"menu_show": menu_list})
+
+#주문 목록
+@app.route('/order_ list/order_show')
+def order_show():
+    payload = login_check()
+    order_list = list(db.user_menu.find({'user_id': payload['id']},{'_id':False}))
 
 #기능 함수 모음
 def cal_num(temp_list):
