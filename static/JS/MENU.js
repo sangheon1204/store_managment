@@ -25,3 +25,7 @@ function price_setting() {
 function restaurant_code() {
     window.location.href = '/restaurant_code';
 }
+
+function ingre_list() {
+    window.location.href = '/ingre_list';
+}

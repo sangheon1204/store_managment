@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+    <meta name="generator" content="Hugo 0.88.1">
+    <title>메뉴 목록 ∙ 설정</title>
+
+    <link rel="canonical" href="https://getbootstrap.com/docs/5.1/examples/dashboard/">
+
+    {%include 'COMMON/head.html'%}
+    {%include 'COMMON/font.html'%}
+</head>
+<script>
+  function ingre_enroll() {
+      ingre = $("#ingre_input").val();
+      num = $("#num_input").val();
+
+      $.ajax({
+            type: "POST",
+            url: "/ingre_list_enroll",
+            data: {
+                "ingre_give": ingre,
+                "num_give": num
+            },
+            success: function (response) {
+                alert(response['msg']);
+                window.location.reload();
+            }
+        })
+  }
+</script>
+<body>
+{%include 'COMMON/header.html'%}
+<div class="container-fluid">
+    <div class="row">
+        {%include 'COMMON/sideBar.html'%}
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                <h1 class="h2">메뉴 목록</h1>
+            </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="card shadow mb-4">
+                        <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-primary">재료 등록</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="input-group mb-3">
+                                <span class="input-group-text">재료</span>
+                                <input type="text" class="form-control" aria-label="Sizing example input"
+                                       aria-describedby="inputGroup-sizing-default" id="ingre_input">
+                            </div>
+                            <div class="input-group mb-3">
+                                <span class="input-group-text">개수</span>
+                                <input type="text" class="form-control" aria-label="Sizing example input"
+                                       aria-describedby="inputGroup-sizing-default" id="num_input">
+                            </div>
+                            <button type="button" class="btn btn-secondary" style="float:right;"
+                                    onclick="javascript:ingre_enroll();">등록
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-6">
+                    <div class="card shadow mb-4">
+                        <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-primary">등록된 메뉴</h6>
+                        </div>
+                        <div class="card-body" id="card-body">
+                        </div>
+                    </div>
+                </div>
+        </main>
+    </div>
+</div>
+
+</body>
+</html>

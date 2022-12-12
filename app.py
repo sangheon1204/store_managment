@@ -5,9 +5,10 @@ app = Flask(__name__)
 from pymongo import MongoClient
 import certifi
 
-ca=certifi.where()
+ca = certifi.where()
 
-client = MongoClient("mongodb+srv://test:sparta@cluster0.cajtwuw.mongodb.net/?retryWrites=true&w=majority", tlsCAFile=ca)
+client = MongoClient("mongodb+srv://test:sparta@cluster0.cajtwuw.mongodb.net/?retryWrites=true&w=majority",
+                     tlsCAFile=ca)
 db = client.dbsparta_plus_week4
 
 # JWT 토큰을 만들 때 필요한 비밀문자열입니다. 아무거나 입력해도 괜찮습니다.
@@ -24,10 +25,10 @@ import datetime
 # 그렇지 않으면, 개발자(=나)가 회원들의 비밀번호를 볼 수 있으니까요.^^;
 import hashlib
 
-#re.함수를 사용하기 위해 추가하였습니다.
+# re.함수를 사용하기 위해 추가하였습니다.
 import re
 
-#json 내장 모듈을 사용하기 위함
+# json 내장 모듈을 사용하기 위함
 import json
 
 
@@ -46,14 +47,17 @@ def home():
     except jwt.exceptions.DecodeError:
         return redirect(url_for("login", msg="로그인 정보가 존재하지 않습니다."))
 
+
 @app.route('/login')
 def login():
     msg = request.args.get("msg")
     return render_template('login.html', msg=msg)
 
+
 @app.route('/review')
 def review():
     return render_template('review.html')
+
 
 #################################
 ##  로그인을 위한 API            ##
@@ -75,6 +79,7 @@ def api_register():
         {'id': id_receive, 'pw': pw_hash, 'nick': nickname_receive, 'userstore': userstore_receive})
     return jsonify({'result': 'success'})
 
+
 #################################
 ##  ID, 닉네임 중복학인           ##
 #################################
@@ -83,21 +88,20 @@ def api_register():
 def check_id():
     id_receive = request.form['id_give']
     user = db.user.find_one({'id': id_receive})
-    if( user == None):
-        return jsonify({'msg' : '1'})
+    if (user == None):
+        return jsonify({'msg': '1'})
     else:
-        return jsonify({'msg' : '2'})
+        return jsonify({'msg': '2'})
 
 
 @app.route("/register/check_nick", methods=["POST"])
 def check_nick():
     nick_receive = request.form['nick_give']
     user = db.user.find_one({'nick': nick_receive})
-    if( user == None):
-        return jsonify({'msg' : '1'})
+    if (user == None):
+        return jsonify({'msg': '1'})
     else:
-        return jsonify({'msg' : '2'})
-
+        return jsonify({'msg': '2'})
 
 
 # [로그인 API]
@@ -159,6 +163,7 @@ def api_valid():
     except jwt.exceptions.DecodeError:
         return jsonify({'result': 'fail', 'msg': '로그인 정보가 존재하지 않습니다.'})
 
+
 #################################
 ##  리뷰 작성 및 저장             ##
 #################################
@@ -168,26 +173,30 @@ def movie_post():
     star_receive = request.form['star_give']
     comment_receive = request.form['comment_give']
 
-    doc = {'name' : name_receive,
-           'star' : star_receive,
-           'comment' : comment_receive
+    doc = {'name': name_receive,
+           'star': star_receive,
+           'comment': comment_receive
            }
     db.reviews.insert_one(doc)
 
     return jsonify({'msg': '저장 완료'})
 
+
 @app.route("/review/get", methods=["GET"])
 def movie_get():
-    reviews_list = list(db.reviews.find({},{'_id':False}))
+    reviews_list = list(db.reviews.find({}, {'_id': False}))
     return jsonify({'reviews': reviews_list})
+
 
 @app.route("/test/request_order")
 def request_order():
     return render_template('request_order.html')
 
+
 @app.route("/test/request_partner")
 def request_partner():
     return render_template('request_partner.html')
+
 
 @app.route('/test/enrollPartner', methods=['POST'])
 def enrollPartner():
@@ -207,6 +216,7 @@ def enrollPartner():
     db.partners.insert_one(doc)
     return jsonify({"msg": "등록 완료"})
 
+
 @app.route("/test/findPartner", methods=['POST'])
 def findPartner():
     code_receive = request.form["code_give"]
@@ -214,10 +224,12 @@ def findPartner():
 
     return jsonify({"goods": partner_info})
 
+
 @app.route("/test/partnerList")
 def partnerList():
     partner_list = list(db.partners.find({}, {"_id": False}))
     return jsonify({"partners": partner_list})
+
 
 @app.route("/test/goodsEnroll", methods=['POST'])
 def goodsEnroll():
@@ -233,6 +245,7 @@ def goodsEnroll():
 
     db.goods.insert_one(doc);
     return jsonify({"msg": "등록 완료"})
+
 
 @app.route("/test/userEnroll", methods=['POST'])
 def userEnroll():
@@ -252,13 +265,14 @@ def userEnroll():
     db.orders.insert_one(doc);
     return jsonify({"msg": "등록 완료"})
 
+
 @app.route("/bucket", methods=["GET"])
 def bucket_get():
     # 음식의 모든 정보를 html로 넘겨준다
     food_list = list(db.menu.find({}, {'_id': False}))
 
-    #차례로 월~일
-    week=[0,0,0,0,0,0,0]
+    # 차례로 월~일
+    week = [0, 0, 0, 0, 0, 0, 0]
 
     for total in food_list:
         week[0] = week[0] + total['Day']['월']
@@ -267,20 +281,21 @@ def bucket_get():
         week[3] = week[3] + total['Day']['목']
         week[4] = week[4] + total['Day']['금']
         week[5] = week[5] + total['Day']['토']
-        week[6] = week[6] + total['Day']['일']        
+        week[6] = week[6] + total['Day']['일']
 
-    menu_num=[]
+    menu_num = []
     for total in food_list:
         menu_num.append(total['num'])
 
     # 재료의 모든 정보를 html로 넘겨준다
     ingredient_list = list(db.ingredient.find({}, {'_id': False}))
 
-    return jsonify({'menu': food_list, 'ingredient': ingredient_list, 'week':week, 'menu_num':menu_num})
+    return jsonify({'menu': food_list, 'ingredient': ingredient_list, 'week': week, 'menu_num': menu_num})
+
 
 ##메인페이지 구성
 
-#주문하기
+# 주문하기
 @app.route("/order", methods=["GET", "POST"])
 def order():
     if request.method == 'GET':
@@ -310,11 +325,13 @@ def order():
 
         return render_template('index.html')
 
+
 @app.route("/order/buy")
 def order_buy():
     print(request.form)
 
-#판매량 및 현재 수량
+
+# 판매량 및 현재 수량
 @app.route("/bucket", methods=["POST"])
 def bucket_post():
     food_receive = request.form['menu_give']
@@ -330,75 +347,65 @@ def bucket_post():
     #     return jsonify({'msg': '요일을 잘못 입력하셨습니다. 다시 입력하세요'})
 
     # db에서 클라이언트가 준 food_receive(음식)의 정보를 받아온다.
-    menu_list = list(db.test_menu.find({'name': food_receive}, {'_id': False}))
+    payload = login_check()
+    menu_list = db.menu.find_one({'user_id': payload['id']}, {'_id': False})
+    count = 0
+    ingre_arr = []
 
-    # 만약 음식 정보가 없으면 (처음으로 음식을 입력할 경우)
-    if len(menu_list) == 0:
+    for a in [k for k in menu_list.keys() if 'ingredient_' in k]:
+        if menu_list['ingredient_' + str(count)] is not None:
+            ingre_arr.insert(count, menu_list['ingredient_' + str(count)])
+            count += 1
 
-        days = {'월': 0, '화': 0, '수': 0, '목': 0, '금': 0, '토': 0, '일': 0}
 
-        # day_receive(요일)의 맞춰서 밸류값을 증가
-        for day in days.keys():
-            if day == day_receive:
-                days[day] = days[day] + 1
-                break
+    for arr in ingre_arr:
+        print(ingre_arr)
+        find_ingre = db.ingredient.find_one({'name': arr})
+        new_num = int(find_ingre['num']) - 1
+        db.ingredient.update_one({'name': arr}, {'$set': {'num': new_num}})
 
-        doc = {
-            'name': food_receive,
-            'Day': days,
-            'num': 1
-        }
+    list(db.menu.find({'name': food_receive}, {'_id': False}))
 
-        db.test_menu.insert_one(doc)
+    ###음식판매 숫자 증가시키기###
+    # food_receive(판매된 음식)의 정보를 받아온다
+    food = db.menu.find_one({'menu': food_receive, 'user_id': payload['id']}, {'_id': False})
+    # 음식의 기존 판매량에 1을 더해줌
+    new_num = int(food['num']) + 1
 
-    # 이미 등록된 음식이라면
-    else:
-        food_ingredient = {'김치찌개': ['마늘', '양파', '대파', '소금'], '청국장': ['양파', '대파'],
-                           '부대찌개': ['마늘', '소금'], '동태찌개': ['소금']}
+    # 44줄 dictionay값
+    day_dic = food['Day']
 
-        # food_receive(키값)에 맞는 밸류값들(재료들)을 하나씩 감소시킨다
-        for ingredient in food_ingredient[food_receive]:
-            find_ingre = list(db.ingredient.find({'name': ingredient}, {'_id': False}))
-            new_num = int(find_ingre[0]['num']) - 1
-            # 감소된 재료를 db에 업데이트 한다
-            db.ingredient.update_one({'name': ingredient}, {'$set': {'num': new_num}})
-
-        ###음식판매 숫자 증가시키기###
-        # food_receive(판매된 음식)의 정보를 받아온다
-        food = list(db.menu.find({'name': food_receive}, {'_id': False}))
-        # 음식의 기존 판매량에 1을 더해줌
-        new_num = int(food[0]['num']) + 1
-
-        # 44줄 dictionay값
-        day_dic = food[0]['Day']
-
-        # day_dic을 돌려 맞는 요일을 하나 증가시켜줌
-        for day in day_dic.keys():
-            if day == day_receive:
-                day_dic[day] = day_dic[day] + 1
-                break
-        # 음식의 판매량과 요일의 값을 업데이트
-        db.menu.update_one({'name': food_receive}, {'$set': {'num': new_num}})
-        db.menu.update_one({'name': food_receive}, {'$set': {'Day': day_dic}})
-
+    # day_dic을 돌려 맞는 요일을 하나 증가시켜줌
+    for day in day_dic.keys():
+        if day == day_receive:
+            day_dic[day] = day_dic[day] + 1
+            break
+    # 음식의 판매량과 요일의 값을 업데이트
+    db.menu.update_one({'menu': food_receive, 'user_id': payload['id']}, {'$set': {'num': new_num}})
+    db.menu.update_one({'menu': food_receive, 'user_id': payload['id']}, {'$set': {'Day': day_dic}})
     return jsonify({'msg': '등록완료'})
 
-#사이드바 href
+
+# 사이드바 href
 @app.route('/partner_list')
 def partner_list():
     return render_template("partner_list.html")
+
 
 @app.route('/menu_list')
 def menu_list():
     return render_template("menu_list.html")
 
+
 @app.route('/order_list')
 def order_list():
     return render_template("order_list.html")
 
+
 @app.route('/price_setting')
 def price_setting():
     return render_template("price_setting.html")
+
 
 @app.route('/restaurant_code')
 def restaurant_code():
@@ -406,7 +413,12 @@ def restaurant_code():
     user_id = payload['id']
     return render_template("restaurant_code.html")
 
-#메뉴 목록
+@app.route('/ingre_list')
+def ingre_list():
+    return render_template("ingre_list.html")
+
+
+# 메뉴 목록
 @app.route('/menu_list/menu_enroll', methods=['POST'])
 def menu_enroll():
     days = {'월': 0, '화': 0, '수': 0, '목': 0, '금': 0, '토': 0, '일': 0}
@@ -415,8 +427,9 @@ def menu_enroll():
     menu_check = db.menu.find_one({"user_id": payload['id'], 'menu': menu_receive}, {'_id': False})
     if not menu_check is None:
         return jsonify({"msg": "메뉴가 등록되어있습니다."})
-    db.menu.insert_one({'user_id': payload['id'], 'menu': menu_receive,"Day": days, "num":1})
+    db.menu.insert_one({'user_id': payload['id'], 'menu': menu_receive, "Day": days, "num": 1})
     return jsonify({"msg": "등록 완료"})
+
 
 @app.route('/menu_list/ingredients_enroll', methods=['POST'])
 def ingredients_enroll():
@@ -424,30 +437,32 @@ def ingredients_enroll():
     ingredients_receive = request.form['ingre_give']
     count = 0
     payload = login_check()
-    ingre_count = db.menu.find_one({"user_id": payload['id'], 'menu': menu_receive},{'_id': False})
+    ingre_count = db.menu.find_one({"user_id": payload['id'], 'menu': menu_receive}, {'_id': False})
     if ingre_count == None:
         return jsonify({"msg": "메뉴가 없습니다."})
-    print([ k for k in ingre_count.keys() if 'ingredient_' in k])
-    if [ k for k in ingre_count.keys() if 'ingredient_' in k] == []:
+    print([k for k in ingre_count.keys() if 'ingredient_' in k])
+    if [k for k in ingre_count.keys() if 'ingredient_' in k] == []:
         count = 0
     else:
-        for a in [ k for k in ingre_count.keys() if 'ingredient_' in k]:
+        for a in [k for k in ingre_count.keys() if 'ingredient_' in k]:
             count += 1
 
     db.menu.update_one(
         {"user_id": payload['id'], 'menu': menu_receive},
-        {"$set" :
-             {"ingredient_"+str(count): ingredients_receive}
+        {"$set":
+             {"ingredient_" + str(count): ingredients_receive}
          },
         True
     )
     return jsonify({"msg": "등록 완료"})
 
+
 @app.route('/menu_list/menu_show')
 def menu_show():
     payload = login_check()
-    menu_list = list(db.menu.find({'user_id': payload['id']},{'_id':False}))
+    menu_list = list(db.menu.find({'user_id': payload['id']}, {'_id': False}))
     return jsonify({"menu_show": menu_list})
+
 
 @app.route('/menu_list/menu_delete', methods=['POST'])
 def menu_delete():
@@ -456,14 +471,16 @@ def menu_delete():
     db.menu.delete_one({"user_id": payload['id'], "menu": menu})
     return jsonify({"msg": "삭제 완료"})
 
-#추가세팅
-#식당 코드 설정
+
+# 추가세팅
+# 식당 코드 설정
 @app.route('/addtion_setting/restaurant_enroll', methods=['POST'])
 def restaurant_enroll():
     res_receive = request.form['res_give']
     payload = login_check()
-    db.user.update_one({'id': payload['id']},{"$set":{"userstore":res_receive}})
+    db.user.update_one({'id': payload['id']}, {"$set": {"userstore": res_receive}})
     return jsonify({"msg": "등록 완료"})
+
 
 @app.route('/addition_setting/res_name')
 def res_name():
@@ -471,7 +488,22 @@ def res_name():
     user_info = db.user.find_one({"id": payload['id']})
     return jsonify({"res_name": user_info['userstore']})
 
-#기능 함수 모음
+
+@app.route('/menu_selection')
+def menu_selection():
+    payload = login_check()
+    menu_info = list(db.menu.find({'user_id': payload['id']}, {'_id': False}))
+    return jsonify({"menu_info": menu_info})
+
+@app.route('/ingre_list_enroll', methods=['POST'])
+def ingre_list_enroll():
+    ingre_receive = request.form['ingre_give']
+    num_receive = request.form['num_give']
+
+    db.ingredient.insert_one({"name": ingre_receive, "num": num_receive})
+    return jsonify({"msg": "등록 완료"})
+
+# 기능 함수 모음
 def cal_num(temp_list):
     if len(temp_list) == 0:
         num = 1
@@ -483,6 +515,7 @@ def cal_num(temp_list):
         num = temp_num + 1
     return num
 
+
 def login_check():
     token_receive = request.cookies.get('mytoken')
     try:
@@ -492,6 +525,7 @@ def login_check():
         return redirect(url_for("login", msg="로그인 시간이 만료되었습니다."))
     except jwt.exceptions.DecodeError:
         return redirect(url_for("login", msg="로그인 정보가 존재하지 않습니다."))
+
 
 if __name__ == '__main__':
     app.run('0.0.0.0', port=5000, debug=True)
