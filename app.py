@@ -265,10 +265,27 @@ def userEnroll():
 def bucket_get():
     # 음식의 모든 정보를 html로 넘겨준다
     food_list = list(db.menu.find({}, {'_id': False}))
+
+    #차례로 월~일
+    week=[0,0,0,0,0,0,0]
+
+    for total in food_list:
+        week[0] = week[0] + total['Day']['월']
+        week[1] = week[1] + total['Day']['화']
+        week[2] = week[2] + total['Day']['수']
+        week[3] = week[3] + total['Day']['목']
+        week[4] = week[4] + total['Day']['금']
+        week[5] = week[5] + total['Day']['토']
+        week[6] = week[6] + total['Day']['일']        
+
+    menu_num=[]
+    for total in food_list:
+        menu_num.append(total['num'])
+
     # 재료의 모든 정보를 html로 넘겨준다
     ingredient_list = list(db.ingredient.find({}, {'_id': False}))
 
-    return jsonify({'menu': food_list, 'ingredient': ingredient_list})
+    return jsonify({'menu': food_list, 'ingredient': ingredient_list, 'week':week, 'menu_num':menu_num})
 
 ##메인페이지 구성
 
