@@ -124,6 +124,13 @@
             flex-direction: column;
             color: blue;
         }
+        .id {
+            text-align:center;
+        }
+
+        .pw {
+            text-align: center;
+        }
     </style>
 </head>
 <script>
@@ -224,8 +231,8 @@
         <h1 class="logo2" style="color:white;">MEMBER LOGIN</h1>
     </div>
     <form action="javascript:login();" class="loginForm">
-        <input type="text" placeholder="USERNAME" id="userid">
-        <input type="password" placeholder="PASSWORD" id="userpw">
+        <input class ="id" type="text" placeholder="USERNAME" id="userid">
+        <input class ="pw" type="password" placeholder="PASSWORD" id="userpw">
     </form>
     <div class="loginBtn">
         <input type="submit" value="LOGIN" onclick="login()">
