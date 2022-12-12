@@ -227,17 +227,6 @@ def enrollPartner():
     db.partners.insert_one(doc)
     return jsonify({"msg": "등록 완료"})
 
-def cal_num(temp_list):
-    if len(temp_list) == 0:
-        num = 1
-    else:
-        temp_num = 0
-        for cnt in temp_list:
-            if temp_num < cnt['num']:
-                temp_num = cnt['num']
-        num = temp_num + 1
-    return num
-
 @app.route("/test/findPartner", methods=['POST'])
 def findPartner():
     code_receive = request.form["code_give"]
@@ -283,7 +272,6 @@ def userEnroll():
     db.orders.insert_one(doc);
     return jsonify({"msg": "등록 완료"})
 
-##메인페이지 구성
 @app.route("/bucket", methods=["GET"])
 def bucket_get():
     # 음식의 모든 정보를 html로 넘겨준다
@@ -293,7 +281,7 @@ def bucket_get():
 
     return jsonify({'menu': food_list, 'ingredient': ingredient_list})
 
-
+##메인페이지 구성
 @app.route("/bucket", methods=["POST"])
 def bucket_post():
     food_receive = request.form['menu_give']
@@ -362,6 +350,7 @@ def bucket_post():
 
     return jsonify({'msg': '등록완료'})
 
+
 @app.route('/partner_list')
 def partner_list():
     return render_template("partner_list.html")
@@ -418,6 +407,18 @@ def menu_show():
     payload = login_check()
     menu_list = list(db.user_menu.find({'user_id': payload['id']},{'_id':False}))
     return jsonify({"menu_show": menu_list})
+
+#기능 함수 모음
+def cal_num(temp_list):
+    if len(temp_list) == 0:
+        num = 1
+    else:
+        temp_num = 0
+        for cnt in temp_list:
+            if temp_num < cnt['num']:
+                temp_num = cnt['num']
+        num = temp_num + 1
+    return num
 
 def login_check():
     token_receive = request.cookies.get('mytoken')
