@@ -173,7 +173,7 @@
             url: "/api/register",
             data: {
                 id_give: $('#resUserId').val(),
-                pw_give: $('#resUserPw').val(),
+                pw_give: $('#resUserPw1').val(),
                 nickname_give: $('#resUserNick').val(),
                 userstore_give: $(`#resUserStore`).val()
             },
@@ -219,6 +219,15 @@
             }
         })
     }
+    function check_pw() {
+        pw1 = $('#resUserPw1').val()
+        pw2 = $('#resUserPw2').val()
+        if (pw1 == pw2) {
+            $('#PwCheck').text('일치합니다.')
+        }else {
+            $('#PwCheck').text('다시 입력해주세요')
+        }
+    }
 </script>
 <body>
 <div class="wrap">
@@ -252,20 +261,26 @@
                 <div style="margin-top:20px; margin-left:20px;"><h1>회원가입 <span style="font-size:15px;">SIGN UP</span>
                 </h1></div>
                 <div class="signUpBtn" style="margin-left:25%; margin-top:20px;">
-                    <span id="IdDuplicate"></span>
                     <div class="input-group mb-3">
                         <input type="text" class="form-control" placeholder="My ID" aria-label="Recipient's username"
                                aria-describedby="button-addon2" id="resUserId">
                         <button class="btn btn-outline-secondary" type="button" id="IdDuplBtn" onclick="check_id()">중복확인</button>
                     </div>
+                    <span id="IdDuplicate"></span>
                     <input type="password" class="form-control" placeholder="My PassWord" aria-label="Username"
-                           aria-describedby="basic-addon1" style="margin-top:20px;" id="resUserPw">
-                    <span style="margin-top:20px;" id="NickDuplicate"></span>
+                           aria-describedby="basic-addon1" style="margin:20px 0px 20px 0px;" id="resUserPw1">
+                    <div class="input-group mb-3">
+                        <input type="password" class="form-control" placeholder="다시 한번 입력해주세요." aria-label="Username"
+                           aria-describedby="basic-addon1" style="margin:0px 0px 0px 0px;" id="resUserPw2">
+                        <button class="btn btn-outline-secondary" type="button" id="PwDuplBtn" onclick="check_pw()">확인</button>
+                    </div>
+                    <span id="PwCheck" style ="margin-bottom:20px;"></span>
                     <div class="input-group mb-3">
                         <input type="text" class="form-control" placeholder="My NickName"
                                aria-label="Recipient's username" aria-describedby="button-addon2" id="resUserNick">
                         <button class="btn btn-outline-secondary" type="button" id="NickDuplBtn" onclick="check_nick()">중복확인</button>
                     </div>
+                    <span id="NickDuplicate"></span>
                     <input type="text" class="form-control" placeholder="가게 이름" aria-label="Username"
                            aria-describedby="basic-addon1" style="margin-top:20px;" id="resUserStore">
                     <button type="button" class="btn btn-primary" style="margin-top:20px;" onclick="register()">등록</button>
