@@ -320,17 +320,17 @@ def bucket_post():
     food_receive = request.form['menu_give']
     day_receive = request.form['day_give']
 
-    Menu = ['김치찌개', '동태찌개', '부대찌개', '청국장']
-    Week = ['월', '화', '수', '목', '금', '토', '일']
-    # 입력된 음식이 메뉴에 없으면
-    if food_receive not in Menu:
-        return jsonify({'msg': '메뉴에 없는 음식입니다. 다시 입력하세요'})
-    # 입력된 요일이 잘못돼었으면
-    if day_receive not in Week:
-        return jsonify({'msg': '요일을 잘못 입력하셨습니다. 다시 입력하세요'})
+    # Menu = ['김치찌개', '동태찌개', '부대찌개', '청국장']
+    # Week = ['월', '화', '수', '목', '금', '토', '일']
+    # # 입력된 음식이 메뉴에 없으면
+    # if food_receive not in Menu:
+    #     return jsonify({'msg': '메뉴에 없는 음식입니다. 다시 입력하세요'})
+    # # 입력된 요일이 잘못돼었으면
+    # if day_receive not in Week:
+    #     return jsonify({'msg': '요일을 잘못 입력하셨습니다. 다시 입력하세요'})
 
     # db에서 클라이언트가 준 food_receive(음식)의 정보를 받아온다.
-    menu_list = list(db.menu.find({'name': food_receive}, {'_id': False}))
+    menu_list = list(db.test_menu.find({'name': food_receive}, {'_id': False}))
 
     # 만약 음식 정보가 없으면 (처음으로 음식을 입력할 경우)
     if len(menu_list) == 0:
@@ -349,7 +349,7 @@ def bucket_post():
             'num': 1
         }
 
-        db.menu.insert_one(doc)
+        db.test_menu.insert_one(doc)
 
     # 이미 등록된 음식이라면
     else:
