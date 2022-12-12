@@ -71,18 +71,33 @@ def api_register():
 
     pw_hash = hashlib.sha256(pw_receive.encode('utf-8')).hexdigest()
 
-    if len(pw_receive) < 8 or len(pw_receive) > 21 and not re.findall('[0-9]+' , pw_receive)\
-    and (not re.findall('[a-z]' , pw_receive) or not re.findall('[A-Z]' , pw_receive)):
-        return jsonify({'msg' : '비밀번호 형식이 잘못되었습니다.'})
-    elif not re.findall('[`~!@#$%^&*(),.<>/?]' , pw_receive):
-        return jsonify({'msg' : '적어도 1개의 특수문자를 포함해야합니다'})
+    db.user.insert_one(
+        {'id': id_receive, 'pw': pw_hash, 'nick': nickname_receive, 'userstore': userstore_receive})
+    return jsonify({'result': 'success'})
+
+#################################
+##  ID, 닉네임 중복학인           ##
+#################################
+
+@app.route("/register/check_id", methods=["POST"])
+def check_id():
+    id_receive = request.form['id_give']
+    user = db.user.find_one({'id': id_receive})
+    if( user == None):
+        return jsonify({'msg' : '1'})
     else:
-        if (db.user.find_one({'id': id_receive}) or db.user.find_one({'nick': nickname_receive}) is not None):
-            return jsonify({'msg': '아이디 혹은 닉네임이 중복되었습니다.'})
-        else:
-            db.user.insert_one(
-                {'id': id_receive, 'pw': pw_hash, 'nick': nickname_receive, 'userstore': userstore_receive})
-            return jsonify({'result': 'success'})
+        return jsonify({'msg' : '2'})
+
+
+@app.route("/register/check_nick", methods=["POST"])
+def check_nick():
+    nick_receive = request.form['nick_give']
+    user = db.user.find_one({'nick': nick_receive})
+    if( user == None):
+        return jsonify({'msg' : '1'})
+    else:
+        return jsonify({'msg' : '2'})
+
 
 
 # [로그인 API]
@@ -165,30 +180,6 @@ def movie_post():
 def movie_get():
     reviews_list = list(db.reviews.find({},{'_id':False}))
     return jsonify({'reviews': reviews_list})
-
-
-#################################
-##  ID, 닉네임 중복학인           ##
-#################################
-
-@app.route("/register/check_id", methods=["POST"])
-def check_id():
-    id_receive = request.form['id_give']
-    user = db.user.find_one({'id': id_receive})
-    if( user == None):
-        return jsonify({'msg' : '1'})
-    else:
-        return jsonify({'msg' : '2'})
-
-
-@app.route("/register/check_nick", methods=["POST"])
-def check_nick():
-    nick_receive = request.form['nick_give']
-    user = db.user.find_one({'nick': nick_receive})
-    if( user == None):
-        return jsonify({'msg' : '1'})
-    else:
-        return jsonify({'msg' : '2'})
 
 @app.route("/test/request_order")
 def request_order():
