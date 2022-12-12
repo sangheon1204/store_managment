@@ -453,9 +453,15 @@ def order_show():
 def restaurant_enroll():
     res_receive = request.form['res_give']
     payload = login_check()
-    res_code_receive = str(payload['id']) + "aaa" + str(res_receive)
-    db.user_restaurant.insert_one({'user_id': payload['id'], 'res_name': res_receive, 'res_code': res_code_receive})
+    db.user.update_one({'id': payload['id']},{"$set":{"userstore":res_receive}})
     return jsonify({"msg": "등록 완료"})
+
+@app.route('/addition_setting/res_name')
+def res_name():
+    payload = login_check()
+    user_info = db.user.find_one({"id": payload['id']})
+    return jsonify({"res_name": user_info['userstore']})
+
 
 #기능 함수 모음
 def cal_num(temp_list):

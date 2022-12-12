@@ -36,7 +36,14 @@
     }
 
     function code_list() {
-
+        $.ajax({
+            type: "GET",
+            url: "/addition_setting/res_name",
+            data: {},
+            success: function (response) {
+                $("#res_name").text(response["res_name"]);
+            }
+        })
     }
 </script>
 <body>
@@ -53,7 +60,7 @@
                 <div class="col-lg-6">
                     <div class="card shadow mb-4">
                         <div class="card-header py-3">
-                            <h6 class="m-0 font-weight-bold text-primary">식당 등록</h6>
+                            <h6 class="m-0 font-weight-bold text-primary">변경할 식당명</h6>
                         </div>
                         <div class="card-body">
                             <div class="input-group mb-3">
@@ -71,15 +78,12 @@
                 <div class="col-lg-6">
                     <div class="card shadow mb-4">
                         <div class="card-header py-3">
-                            <h6 class="m-0 font-weight-bold text-primary">등록된 식당</h6>
+                            <h6 class="m-0 font-weight-bold text-primary">등록된 식당 이름</h6>
                         </div>
                         <div class="card-body" id="card-body">
                             <div class="card">
-                                <div class="card-header">
-                                    Featured
-                                </div>
                                 <ul class="list-group list-group-flush">
-                                    <li class="list-group-item">An item</li>
+                                    <li class="list-group-item" id="res_name"></li>
                                 </ul>
                             </div>
                         </div>
