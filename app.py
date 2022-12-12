@@ -409,12 +409,13 @@ def restaurant_code():
 #메뉴 목록
 @app.route('/menu_list/menu_enroll', methods=['POST'])
 def menu_enroll():
+    days = {'월': 0, '화': 0, '수': 0, '목': 0, '금': 0, '토': 0, '일': 0}
     menu_receive = request.form['menu_give']
     payload = login_check()
     menu_check = db.menu.find_one({"user_id": payload['id'], 'menu': menu_receive}, {'_id': False})
     if not menu_check is None:
         return jsonify({"msg": "메뉴가 등록되어있습니다."})
-    db.menu.insert_one({'user_id': payload['id'], 'menu': menu_receive})
+    db.menu.insert_one({'user_id': payload['id'], 'menu': menu_receive,"Day": days, "num":1})
     return jsonify({"msg": "등록 완료"})
 
 @app.route('/menu_list/ingredients_enroll', methods=['POST'])
@@ -454,14 +455,6 @@ def menu_delete():
     payload = login_check()
     db.menu.delete_one({"user_id": payload['id'], "menu": menu})
     return jsonify({"msg": "삭제 완료"})
-
-#주문 목록
-@app.route('/order_ list/order_show')
-def order_show():
-    payload = login_check()
-    user_info = db.user.find_one({"id": payload['id']})
-    order_list = list(db.orders_new.find({"store_name": user_info["userstore"]},{'_id':False}))
-    return jsonify ({"order_list": order_list})
 
 #추가세팅
 #식당 코드 설정
