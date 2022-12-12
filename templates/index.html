@@ -56,6 +56,21 @@
             justify-content: space-between;
         }
 
+        #buttons {
+            margin-left: 900px;
+        }
+
+        .line {
+            display: none;
+            margin-left: 180px;
+        }
+
+        .chart-div {
+            display: none;
+            padding-top: 50px;
+            padding-bottom: 20px;
+            margin-left: 350px;
+        }
     </style>
 
     <script>
@@ -171,7 +186,13 @@
 
                 <div class="mybox">
                     <div class="mybucket">
-                        <input id="menu" class="form-control" type="text" placeholder="판매된 메뉴를 입력하세요">
+                        <select class="form-select form-select-lg mb-3" id="menu">
+                            <option selected>메뉴를 선택하세요</option>
+                            <option value="김치찌개">김치찌개</option>
+                            <option value="동태찌개">동태찌개</option>
+                            <option value="부대찌개">부대찌개</option>
+                            <option value="청국장">청국장</option>
+                        </select>
                         <select class="form-select form-select-lg mb-3" id="day">
                             <option selected>요일을 선택하세요</option>
                             <option value="월">월</option>
@@ -187,22 +208,40 @@
                 </div>
 
                 <script>
+                    function sell_by_total() {
+                        $('.line').show()
+                        $('.bar').hide()
+                        $('.chart-div').hide()
+                    }
+                    function sell_by_day() {
+                        $('.line').hide()
+                        $('.bar').show()
+                        $('.chart-div').hide()
+                    }
+                    function sell_by_menu() {
+                        $('.line').hide()
+                        $('.bar').hide()
+                        $('.chart-div').show()
+                    } 
+                </script>
+
+                <script>
                     function save_bucket() {
                         let menu = $('#menu').val()
                         let day = $('#day').val()
-                
+
                         $.ajax({
                             type: "POST",
                             url: "/bucket",
-                            data: {menu_give: menu, day_give: day},
+                            data: { menu_give: menu, day_give: day },
                             success: function (response) {
                                 alert(response["msg"])
                                 window.location.reload()
                             }
                         });
                     }
-                </script>   
-                
+                </script>
+
                 <script>
                     function reload() {
                         $.ajax({
@@ -215,71 +254,178 @@
                         });
                     }
                 </script>
-                <form action="/result" method="GET">
-                    <script>
-                        function orders() {
-                            $.ajax({
-                                type: "GET",
-                                url: "/login",
-                                data: {},
-                                success: function (response) {
-                                    alert("afasf")
-                                }
-                            });
-                        }                    
-                    </script>
-                </form>
-                <!--요일별 판매량 그래프-->
-                <div style="width:70%;margin:auto">
-                    <canvas id="line-chart"></canvas>
+
+                <div class="btn-group me-2" id="buttons">
+                    <button onclick="sell_by_day()" type="button" class="btn btn-sm btn-outline-secondary">요일별</button>
+                    <button onclick="sell_by_total()" type="button" class="btn btn-sm btn-outline-secondary">요일
+                        전체</button>
+                    <button onclick="sell_by_menu()" type="button" class="btn btn-sm btn-outline-secondary">메뉴별</button>
                 </div>
+
+                <div class="line">
+                    <div style="width:80%;">
+                        <canvas id="canvas"></canvas>
+                    </div>
+                    <script>
+                        $.ajax({
+                            type: "GET",
+                            url: "/bucket",
+                            data: {},
+
+                            success: function (response) {
+                                let menu = response['week']
+                                console.log(menu)
+
+                                new Chart(document.getElementById("canvas"), {
+                                    type: 'line',
+                                    data: {
+                                        labels: ['월', '화', '수', '목', '금', '통', '일'],
+                                        datasets: [{
+                                            label: '요일별 전체 판매량',
+                                            data: [menu[0], menu[1], menu[2], menu[3], menu[4], menu[5], menu[6], menu[7]],
+                                            borderColor: "rgba(255, 201, 14, 1)",
+                                            backgroundColor: "rgba(255, 201, 14, 0.3)",
+                                            fill: true,
+                                            lineTension: 0
+                                        }]
+                                    },
+                                    options: {
+                                        responsive: true,
+                                        title: {
+                                            display: false,
+                                            text: '라인 차트 테스트'
+                                        },
+                                        tooltips: {
+                                            mode: 'index',
+                                            intersect: false,
+                                        },
+                                        hover: {
+                                            mode: 'nearest',
+                                            intersect: true
+                                        },
+                                        scales: {
+                                            xAxes: [{
+                                                display: true,
+                                                scaleLabel: {
+                                                    display: false,
+                                                    labelString: 'x축'
+                                                }
+                                            }],
+                                            yAxes: [{
+                                                display: true,
+                                                ticks: {
+                                                    suggestedMin: 0,
+                                                },
+                                                scaleLabel: {
+                                                    display: true,
+                                                    labelString: '총판매량'
+                                                }
+                                            }]
+                                        }
+                                    }
+                                });
+
+                            }
+                        });
+
+                    </script>
+                </div>
+
+                <!-- 메뉴별 전체 판매량 -->
+                <div class="chart-div">
+                    <canvas id="pieChartCanvas" width="500px" height="500px"></canvas>
+                </div>
+
                 <script>
-                    $.ajax({
-                        type: "GET",
-                        url: "/bucket",
-                        data: {},
 
-                        success: function (response) {
-                            let menu = response['menu']
-                            console.log(response)
 
-                            new Chart(document.getElementById("line-chart"), {
-                                type: 'line',
-                                data: {
-                                    labels: ['월', '화', '수', '목', '금', '토', '일'],
-                                    datasets: [{
-                                        data: [menu[0]['Day']['월'], menu[0]['Day']['화'], menu[0]['Day']['수'], menu[0]['Day']['목'], menu[0]['Day']['금'], menu[0]['Day']['토'], menu[0]['Day']['일']],
-                                        label: "김치찌개",
-                                        borderColor: "#3e95cd",
-                                        fill: false
-                                    }, {
-                                        data: [menu[1]['Day']['월'], menu[1]['Day']['화'], menu[1]['Day']['수'], menu[1]['Day']['목'], menu[1]['Day']['금'], menu[1]['Day']['토'], menu[1]['Day']['일']],
-                                        label: "동태찌개",
-                                        borderColor: "#8e5ea2",
-                                        fill: false
-                                    }, {
-                                        data: [menu[2]['Day']['월'], menu[2]['Day']['화'], menu[2]['Day']['수'], menu[2]['Day']['목'], menu[2]['Day']['금'], menu[2]['Day']['토'], menu[2]['Day']['일']],
-                                        label: "부대찌개",
-                                        borderColor: "#e8c3b9",
-                                        fill: false
-                                    }, {
-                                        data: [menu[3]['Day']['월'], menu[3]['Day']['화'], menu[3]['Day']['수'], menu[3]['Day']['목'], menu[3]['Day']['금'], menu[3]['Day']['토'], menu[3]['Day']['일']],
-                                        label: "청국장",
-                                        borderColor: "#c45850",
-                                        fill: false
-                                    }
-                                    ]
-                                },
-                                options: {
-                                    title: {
-                                        display: true,
-                                        text: '요일별 메뉴 판매량'
-                                    }
-                                }
-                            });
-                        }
-                    });
+                    window.onload = function () {
+                        $.ajax({
+                            type: "GET",
+                            url: "/bucket",
+                            data: {},
+
+                            success: function (response) {
+                                let menu = response['menu_num']
+                                pieChartDraw(menu);
+                            }
+                        })                        
+                    }
+
+                    let pieChartDraw = function (menu) {
+                        let ctx = document.getElementById('pieChartCanvas').getContext('2d');
+
+                        window.pieChart = new Chart(ctx, {
+                            type: 'pie',
+                            data: {
+                                labels: ['김치찌개', '동태찌개', '부대찌개', '청국장'],
+                                datasets: [{
+                                    data: menu,
+                                    backgroundColor: ['rgb(255, 99, 132, 0.5)', 'rgb(255, 159, 64, 0.5)', 'rgb(255, 205, 86, 0.5)', 'rgb(75, 192, 192, 0.5)']
+                                }]
+                            },
+                            options: {
+                                responsive: false
+                            }
+                        });
+                    };
+
                 </script>
+
+                <!--요일별 판매량 그래프-->
+                <div class="bar">
+                    <div style="width:70%;margin:auto">
+                        <canvas id="line-chart"></canvas>
+                    </div>
+                    <script>
+
+                        $.ajax({
+                            type: "GET",
+                            url: "/bucket",
+                            data: {},
+
+                            success: function (response) {
+                                let menu = response['menu']
+                                console.log(response)
+
+                                new Chart(document.getElementById("line-chart"), {
+                                    type: 'line',
+                                    data: {
+                                        labels: ['월', '화', '수', '목', '금', '토', '일'],
+                                        datasets: [{
+                                            data: [menu[0]['Day']['월'], menu[0]['Day']['화'], menu[0]['Day']['수'], menu[0]['Day']['목'], menu[0]['Day']['금'], menu[0]['Day']['토'], menu[0]['Day']['일']],
+                                            label: "김치찌개",
+                                            borderColor: "#3e95cd",
+                                            fill: false
+                                        }, {
+                                            data: [menu[1]['Day']['월'], menu[1]['Day']['화'], menu[1]['Day']['수'], menu[1]['Day']['목'], menu[1]['Day']['금'], menu[1]['Day']['토'], menu[1]['Day']['일']],
+                                            label: "동태찌개",
+                                            borderColor: "#8e5ea2",
+                                            fill: false
+                                        }, {
+                                            data: [menu[2]['Day']['월'], menu[2]['Day']['화'], menu[2]['Day']['수'], menu[2]['Day']['목'], menu[2]['Day']['금'], menu[2]['Day']['토'], menu[2]['Day']['일']],
+                                            label: "부대찌개",
+                                            borderColor: "#e8c3b9",
+                                            fill: false
+                                        }, {
+                                            data: [menu[3]['Day']['월'], menu[3]['Day']['화'], menu[3]['Day']['수'], menu[3]['Day']['목'], menu[3]['Day']['금'], menu[3]['Day']['토'], menu[3]['Day']['일']],
+                                            label: "청국장",
+                                            borderColor: "#c45850",
+                                            fill: false
+                                        }
+                                        ]
+                                    },
+                                    options: {
+                                        title: {
+                                            display: true,
+                                            text: '요일별 메뉴 판매량'
+                                        }
+                                    }
+                                });
+                            }
+                        });             
+                    </script>
+                </div>
 
                 <!--재료 수량 그래프-->
                 <div style="width:70%;margin:auto;padding-top: 20px;">
