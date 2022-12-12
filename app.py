@@ -394,6 +394,8 @@ def price_setting():
 
 @app.route('/restaurant_code')
 def restaurant_code():
+    payload = login_check();
+    user_id = payload['id']
     return render_template("restaurant_code.html")
 
 #메뉴 목록
@@ -443,6 +445,17 @@ def menu_show():
 def order_show():
     payload = login_check()
     order_list = list(db.user_menu.find({'user_id': payload['id']},{'_id':False}))
+    return
+
+#추가세팅
+#식당 코드 설정
+@app.route('/addtion_setting/restaurant_enroll', methods=['POST'])
+def restaurant_enroll():
+    res_receive = request.form['res_give']
+    payload = login_check()
+    res_code_receive = str(payload['id']) + "aaa" + str(res_receive)
+    db.user_restaurant.insert_one({'user_id': payload['id'], 'res_name': res_receive, 'res_code': res_code_receive})
+    return jsonify({"msg": "등록 완료"})
 
 #기능 함수 모음
 def cal_num(temp_list):
