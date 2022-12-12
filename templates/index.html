@@ -61,15 +61,6 @@
         }
     </style>
 
-    <script>
-        function logout() {
-            $.removeCookie('mytoken');
-            alert('로그아웃!')
-            window.location.href = '/login'
-        }
-    </script>
-
-
 </head>
 
 <body>
@@ -238,8 +229,6 @@
                 </div>
 
                 <script>
-
-
                     window.onload = function () {
                         $.ajax({
                             type: "GET",
