@@ -2,6 +2,14 @@ function partner_list() {
     window.location.href = '/partner_list';
 }
 
+function order() {
+    window.location.href = '/order';
+}
+
+function index() {
+    window.location.href = '/';
+}
+
 function menu_list() {
     window.location.href = '/menu_list';
 }
