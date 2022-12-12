@@ -13,3 +13,7 @@ function order_list() {
 function price_setting() {
     window.location.href = '/price_setting';
 }
+
+function restaurant_code() {
+    window.location.href = '/restaurant_code';
+}
