@@ -271,6 +271,42 @@ def bucket_get():
     return jsonify({'menu': food_list, 'ingredient': ingredient_list})
 
 ##메인페이지 구성
+
+#주문하기
+@app.route("/order", methods=["GET", "POST"])
+def order():
+    if request.method == 'GET':
+        return render_template('order.html')
+    else:
+        name = request.form["name"]
+        store_name = request.form["store_name"]
+        email = request.form["email"]
+        address = request.form["address"]
+        ingredient = request.form["ingredient"]
+        num = request.form["num"]
+
+        doc = {
+            'name': name,
+            'store_name': store_name,
+            'email': email,
+            'address': address,
+            'ingredient': ingredient,
+            'num': num,
+        }
+        db.orders_new.insert_one(doc)
+
+        # 주문한 재료의 양만큼 db에 증가시킨다
+        find_ingre = list(db.ingredient.find({'name': ingredient}, {'_id': False}))
+        new_num = int(find_ingre[0]['num']) + int(num)
+        db.ingredient.update_one({'name': ingredient}, {'$set': {'num': new_num}})
+
+        return render_template('index.html')
+
+@app.route("/order/buy")
+def order_buy():
+    print(request.form)
+
+#판매량 및 현재 수량
 @app.route("/bucket", methods=["POST"])
 def bucket_post():
     food_receive = request.form['menu_give']
