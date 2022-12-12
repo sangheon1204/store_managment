@@ -154,6 +154,45 @@
             </script>
 
             <script>
+                function order_list() {
+        $.ajax({
+            type: "GET",
+            url: "/order_list/order_show",
+            data: {},
+            success: function (response){
+               let rows = response['order_list']
+                for(let i=0; i<rows.length; i++){
+                    let num = rows[i]['num']
+                    let name = rows[i]['name']
+                    let ingredient = rows[i]['ingredient']
+                    let address = rows[i]['address']
+                    let email = rows[i]['email']
+
+                    let temp_html=`
+                    <tr>
+                        <td>${num}</td>
+                        <td>${name}</td>
+                        <td>${ingredient}</td>
+                        <td>${address}</td>
+                        <td>${email}</td>
+                    </tr>`
+
+                    $('#body-bg').append(temp_html)
+
+                }
+               }
+
+        })
+    }
+
+
+
+            </script>
+
+
+
+
+            <script>
                 function reload() {
                     $.ajax({
                         type: "GET",

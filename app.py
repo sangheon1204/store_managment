@@ -296,6 +296,21 @@ def bucket_get():
 ##메인페이지 구성
 
 # 주문하기
+
+
+
+@app.route('/order_list/order_show')
+def order_show():
+    payload = login_check()
+    user_info = db.user.find_one({"id": payload['id']})
+    order_list = list(db.orders_new.find({'store_name':user_info['userstore']}, {'_id': False}))
+    return jsonify({"order_list": order_list})
+
+
+
+
+
+
 @app.route("/order", methods=["GET", "POST"])
 def order():
     if request.method == 'GET':
