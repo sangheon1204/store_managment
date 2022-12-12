@@ -82,17 +82,18 @@ def api_register():
 
     pw_hash = hashlib.sha256(pw_receive.encode('utf-8')).hexdigest()
 
-    if((len(pw_receive) < 8 and len(pw_receive) >21) and not re.findall('[0-9]', pw_receive) and not
-    (re.findall('[a-z]', pw_receive) or not re.findall('[A-Z]',pw_receive))):
-        return jsonify({'msg' : '비밀번호는 기준에 맞지 않습니다.' })
-    elif not re.findall('[~!@#$%^&*(),<>./?]', pw_receive):
-        return jsonify({'msg' : '비밀번호는 적어도 1개 이상의 특수문자를 포함해야 합니다'})
+    if len(pw_receive) < 8 or len(pw_receive) > 21 and not re.findall('[0-9]+' , pw_receive)\
+    and (not re.findall('[a-z]' , pw_receive) or not re.findall('[A-Z]' , pw_receive)):
+        return jsonify({'msg' : '비밀번호 형식이 잘못되었습니다.'})
+    elif not re.findall('[`~!@#$%^&*(),.<>/?]' , pw_receive):
+        return jsonify({'msg' : '적어도 1개의 특수문자를 포함해야합니다'})
     else:
-        if(db.user.find_one({'id' : id_receive}) or db.user.find_one({'nick' : nickname_receive}) is not None):
+        if (db.user.find_one({'id': id_receive}) or db.user.find_one({'nick': nickname_receive}) is not None):
             return jsonify({'msg': '아이디 혹은 닉네임이 중복되었습니다.'})
         else:
-            db.user.insert_one({'id': id_receive, 'pw': pw_hash, 'nick': nickname_receive, 'userstore': userstore_receive})
-    return jsonify({'result': 'success'})
+            db.user.insert_one(
+                {'id': id_receive, 'pw': pw_hash, 'nick': nickname_receive, 'userstore': userstore_receive})
+            return jsonify({'result': 'success'})
 
 
 # [로그인 API]
