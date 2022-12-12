@@ -411,10 +411,10 @@ def restaurant_code():
 def menu_enroll():
     menu_receive = request.form['menu_give']
     payload = login_check()
-    menu_check = db.user_menu.find_one({"user_id": payload['id'], 'menu': menu_receive}, {'_id': False})
+    menu_check = db.menu.find_one({"user_id": payload['id'], 'menu': menu_receive}, {'_id': False})
     if not menu_check is None:
         return jsonify({"msg": "메뉴가 등록되어있습니다."})
-    db.user_menu.insert_one({'user_id': payload['id'], 'menu': menu_receive})
+    db.menu.insert_one({'user_id': payload['id'], 'menu': menu_receive})
     return jsonify({"msg": "등록 완료"})
 
 @app.route('/menu_list/ingredients_enroll', methods=['POST'])
@@ -423,7 +423,7 @@ def ingredients_enroll():
     ingredients_receive = request.form['ingre_give']
     count = 0
     payload = login_check()
-    ingre_count = db.user_menu.find_one({"user_id": payload['id'], 'menu': menu_receive},{'_id': False})
+    ingre_count = db.menu.find_one({"user_id": payload['id'], 'menu': menu_receive},{'_id': False})
     if ingre_count == None:
         return jsonify({"msg": "메뉴가 없습니다."})
     print([ k for k in ingre_count.keys() if 'ingredient_' in k])
@@ -433,7 +433,7 @@ def ingredients_enroll():
         for a in [ k for k in ingre_count.keys() if 'ingredient_' in k]:
             count += 1
 
-    db.user_menu.update_one(
+    db.menu.update_one(
         {"user_id": payload['id'], 'menu': menu_receive},
         {"$set" :
              {"ingredient_"+str(count): ingredients_receive}
@@ -445,22 +445,23 @@ def ingredients_enroll():
 @app.route('/menu_list/menu_show')
 def menu_show():
     payload = login_check()
-    menu_list = list(db.user_menu.find({'user_id': payload['id']},{'_id':False}))
+    menu_list = list(db.menu.find({'user_id': payload['id']},{'_id':False}))
     return jsonify({"menu_show": menu_list})
 
 @app.route('/menu_list/menu_delete', methods=['POST'])
 def menu_delete():
     menu = request.form['menu_give']
     payload = login_check()
-    db.user_menu.delete_one({"user_id": payload['id'], "menu": menu})
+    db.menu.delete_one({"user_id": payload['id'], "menu": menu})
     return jsonify({"msg": "삭제 완료"})
 
 #주문 목록
 @app.route('/order_ list/order_show')
 def order_show():
     payload = login_check()
-    order_list = list(db.user_menu.find({'user_id': payload['id']},{'_id':False}))
-    return
+    user_info = db.user.find_one({"id": payload['id']})
+    order_list = list(db.orders_new.find({"store_name": user_info["userstore"]},{'_id':False}))
+    return jsonify ({"order_list": order_list})
 
 #추가세팅
 #식당 코드 설정
@@ -476,7 +477,6 @@ def res_name():
     payload = login_check()
     user_info = db.user.find_one({"id": payload['id']})
     return jsonify({"res_name": user_info['userstore']})
-
 
 #기능 함수 모음
 def cal_num(temp_list):
