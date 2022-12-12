@@ -457,6 +457,13 @@ def menu_show():
     menu_list = list(db.user_menu.find({'user_id': payload['id']},{'_id':False}))
     return jsonify({"menu_show": menu_list})
 
+@app.route('/menu_list/menu_delete', methods=['POST'])
+def menu_delete():
+    menu = request.form['menu_give']
+    payload = login_check()
+    db.user_menu.delete_one({"user_id": payload['id'], "menu": menu})
+    return jsonify({"msg": "삭제 완료"})
+
 #주문 목록
 @app.route('/order_ list/order_show')
 def order_show():

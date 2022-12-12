@@ -78,7 +78,7 @@
                                     <h2 class="accordion-header" id="headingOne">
                                         <button class="accordion-button" type="button" data-bs-toggle="collapse"
                                                 data-bs-target="#collapseOne${i}" aria-expanded="true"
-                                                aria-controls="collapseOne${i}">
+                                                aria-controls="collapseOne${i}" id="menu_name">
                                             ${menu_title}
                                         </button>
                                     </h2>
@@ -96,6 +96,22 @@
                                 </div>`;
                     $("#card-body").append(temp_html2);
                 }
+            }
+        })
+    }
+
+    function menu_delete() {
+        let menu = $("#menu_delete").val();
+
+        $.ajax({
+            type: "POST",
+            url: "/menu_list/menu_delete",
+            data: {
+                "menu_give": menu
+            },
+            success: function (response) {
+                alert(response['msg']);
+                window.location.reload();
             }
         })
     }
@@ -141,6 +157,19 @@
                                        aria-describedby="inputGroup-sizing-default" id="ingre_input">
                             </div>
                             <button type="button" class="btn btn-secondary" style="float:right;" onclick="javascript:ingre_enroll();">등록</button>
+                        </div>
+                    </div>
+                    <div class="card shadow mb-4">
+                        <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-primary">메뉴 삭제</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="input-group mb-3">
+                                <span class="input-group-text">메뉴</span>
+                                <input type="text" class="form-control" aria-label="Sizing example input"
+                                       aria-describedby="inputGroup-sizing-default" id="menu_delete">
+                            </div>
+                            <button type="button" class="btn btn-secondary" style="float:right;" onclick="javascript:menu_delete();">삭제</button>
                         </div>
                     </div>
                 </div>
