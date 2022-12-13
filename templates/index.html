@@ -326,21 +326,6 @@
                 
                 <script>
                     $.ajax({                        
-                        type: "POST",
-                        url: "/bucket/find",
-                        data: {},
-                        success: function (response) {
-                            let ingredient = response['ingredient']
-                            console.log(ingredient)
-                            for (let i=0; i<ingredient.length; i++){
-                                for (let i=0; i<Object.keys(ingredient[i]).length-2; i++){
-                                    console.log(Object.values(ingredient[i]))
-                                }                                
-                            }
-                        }
-                    })
-
-                    $.ajax({                        
                         type: "GET",
                         url: "/bucket",
                         data: {},
@@ -348,8 +333,7 @@
                             let ingredient = response['ingredient']
                             var name_list =[]
                             var num_list =[]
-                            // console.log(ingredient)
-                            // console.log('asdffg')
+
                             for (let i=0; i<ingredient.length; i++){
                                 name_list.push(ingredient[i]['name'])
                                 num_list.push(ingredient[i]['num'])
