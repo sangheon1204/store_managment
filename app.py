@@ -365,7 +365,7 @@ def bucket_post():
         return jsonify({'msg': '요일을 잘못 입력하셨습니다. 다시 입력하세요'})
 
     # db에서 클라이언트가 준 food_receive(음식)의 정보를 받아온다.
-    menu_list = list(db.menus.find({'name': food_receive}, {'_id': False}))
+    menu_list = list(db.menu_with_ingredients.find({'name': food_receive}, {'_id': False}))
     ingre_list = list(db.test_user_menu.find({}, {'_id': False}))
 
     # 만약 음식 정보가 없으면 (처음으로 음식을 입력할 경우)
@@ -504,8 +504,11 @@ def ingredients_enroll():
          },
         True
     )
-    #ingredients_with_count DB에도 추가
-    db.ingredients_with_count.insert_one({'name':ingredients_receive,'num':0})
+
+    ingredient = list(db.ingredients_with_count.find({'name':ingredients_receive}))
+    if ingredient == []:
+        #ingredients_with_count DB에도 추가
+        db.ingredients_with_count.insert_one({'name':ingredients_receive,'num':0})
 
     return jsonify({"msg": "등록 완료"})
 
