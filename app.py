@@ -370,22 +370,22 @@ def bucket_post():
 
     # 만약 음식 정보가 없으면 (처음으로 음식을 입력할 경우)
     if len(menu_list) == 0:
-        return jsonify({'msg': '재료가 부족합니다.'})
-        # days = {'월': 0, '화': 0, '수': 0, '목': 0, '금': 0, '토': 0, '일': 0}
+        # return jsonify({'msg': '재료가 부족합니다.'})
+        days = {'월': 0, '화': 0, '수': 0, '목': 0, '금': 0, '토': 0, '일': 0}
 
-        # # day_receive(요일)의 맞춰서 밸류값을 증가
-        # for day in days.keys():
-        #     if day == day_receive:
-        #         days[day] = days[day] + 1
-        #         break
+        # day_receive(요일)의 맞춰서 밸류값을 증가
+        for day in days.keys():
+            if day == day_receive:
+                days[day] = days[day] + 1
+                break
 
-        # doc = {
-        #     'name': food_receive,
-        #     'Day': days,
-        #     'num': 1
-        # }
+        doc = {
+            'name': food_receive,
+            'Day': days,
+            'num': 1
+        }
 
-        # db.menus.insert_one(doc)
+        db.menus.insert_one(doc)
         
     # 이미 등록된 음식이라면
     else:        
