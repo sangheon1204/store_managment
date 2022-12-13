@@ -308,7 +308,7 @@ def bucket_get():
 def order_show():
     payload = login_check()
     user_info = db.user.find_one({"id": payload['id']})
-    order_list = list(db.orders_new.find({'store_name':user_info['userstore']}, {'_id': False}))
+    order_list = list(db.orders.find({'store_name':user_info['userstore']}, {'_id': False}))
     return jsonify({"order_list": order_list})
 
 
