@@ -370,6 +370,28 @@ def bucket_post():
 
     # 만약 음식 정보가 없으면 (처음으로 음식을 입력할 경우)
     if len(menu_list) == 0:
+
+
+
+        menus = list(db.menu_with_ingredients.find({'menu': food_receive}, {'_id': False}))
+
+        #판매한 재료들
+        ingre = list(menus[0].values())
+
+        #모든 재료를 가져온다.
+        find_ingres = list(db.ingredients_with_count.find({}))
+        
+        #주문한 메뉴의 재료를 감소시킨다
+        for find in find_ingres:
+            if find['name'] in ingre:
+                find_ingre = list(db.ingredients_with_count.find({'name': find['name']}, {'_id': False}))
+                if find_ingre[0]['num'] == 0:
+                    return jsonify({'msg': '재료가 부족합니다.'})
+                new_num = int(find_ingre[0]['num']) - 1
+                db.ingredients_with_count.update_one({'name': find['name']}, {'$set': {'num': new_num}})
+
+
+
         # return jsonify({'msg': '재료가 부족합니다.'})
         days = {'월': 0, '화': 0, '수': 0, '목': 0, '금': 0, '토': 0, '일': 0}
 
