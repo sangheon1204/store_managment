@@ -308,7 +308,7 @@ def bucket_get():
 def order_show():
     payload = login_check()
     user_info = db.user.find_one({"id": payload['id']})
-    order_list = list(db.orders.find({'store_name':user_info['userstore']}, {'_id': False}))
+    order_list = list(db.orders_new.find({'store_name':user_info['userstore']}, {'_id': False}))
     return jsonify({"order_list": order_list})
 
 
@@ -365,28 +365,28 @@ def bucket_post():
         return jsonify({'msg': '요일을 잘못 입력하셨습니다. 다시 입력하세요'})
 
     # db에서 클라이언트가 준 food_receive(음식)의 정보를 받아온다.
-    menu_list = list(db.menu_with_ingredients.find({'name': food_receive}, {'_id': False}))
+    menu_list = list(db.menus.find({'name': food_receive}, {'_id': False}))
     ingre_list = list(db.test_user_menu.find({}, {'_id': False}))
 
     # 만약 음식 정보가 없으면 (처음으로 음식을 입력할 경우)
     if len(menu_list) == 0:
+        return jsonify({'msg': '재료가 부족합니다.'})
+        # days = {'월': 0, '화': 0, '수': 0, '목': 0, '금': 0, '토': 0, '일': 0}
 
-        days = {'월': 0, '화': 0, '수': 0, '목': 0, '금': 0, '토': 0, '일': 0}
+        # # day_receive(요일)의 맞춰서 밸류값을 증가
+        # for day in days.keys():
+        #     if day == day_receive:
+        #         days[day] = days[day] + 1
+        #         break
 
-        # day_receive(요일)의 맞춰서 밸류값을 증가
-        for day in days.keys():
-            if day == day_receive:
-                days[day] = days[day] + 1
-                break
+        # doc = {
+        #     'name': food_receive,
+        #     'Day': days,
+        #     'num': 1
+        # }
 
-        doc = {
-            'name': food_receive,
-            'Day': days,
-            'num': 1
-        }
-
-        db.menus.insert_one(doc)
-
+        # db.menus.insert_one(doc)
+        
     # 이미 등록된 음식이라면
     else:        
         menus = list(db.menu_with_ingredients.find({'menu': food_receive}, {'_id': False}))
@@ -504,11 +504,8 @@ def ingredients_enroll():
          },
         True
     )
-
-    ingredient = list(db.ingredients_with_count.find({'name':ingredients_receive}))
-    if ingredient == []:
-        #ingredients_with_count DB에도 추가
-        db.ingredients_with_count.insert_one({'name':ingredients_receive,'num':0})
+    #ingredients_with_count DB에도 추가
+    db.ingredients_with_count.insert_one({'name':ingredients_receive,'num':0})
 
     return jsonify({"msg": "등록 완료"})
 
@@ -538,6 +535,7 @@ def menu_delete():
     payload = login_check()
     db.menu_with_ingredients.delete_one({"user_id": payload['id'], "menu": menu})
     db.menus.delete_one({"name": menu})
+    print(menu)
     return jsonify({"msg": "삭제 완료"})
 
 
