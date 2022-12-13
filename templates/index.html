@@ -62,378 +62,336 @@
     </style>
 
 </head>
-<script>
-    $(document).ready(function () {
-        menu_selection();
-    })
 
-    function menu_selection() {
-        $.ajax({
-            type: "GET",
-            url: "/menu_selection",
-            data: {},
-            success: function (response) {
-                let rows = response['menu_info'];
-                for(let i=0;i<rows.length;i++) {
-                    let menu_title = rows[i]['menu']
-                    let temp_html = '';
-                    temp_html = `<option value="${menu_title}">${menu_title}</option>`
-                    $("#menu").append(temp_html);
-                }
-            }
-        });
-    }
-</script>
 <body>
-{%include 'COMMON/header.html'%}
+    {%include 'COMMON/header.html'%}
 
-<div class="container-fluid">
-    <div class="row">
-        {%include 'COMMON/sideBar.html'%}
+    <div class="container-fluid">
+        <div class="row">
+            {%include 'COMMON/sideBar.html'%}
 
-        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-            <div
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+                <div
                     class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-                <h1 class="h2">가게 현황</h1>
-            </div>
-
-            <div class="mybox">
-                <div class="mybucket">
-                    <select class="form-select form-select-lg mb-3" id="menu">
-                        <option selected>메뉴를 선택하세요</option>
-                    </select>
-                    <select class="form-select form-select-lg mb-3" id="day">
-                        <option selected>요일을 선택하세요</option>
-                        <option value="월">월</option>
-                        <option value="화">화</option>
-                        <option value="수">수</option>
-                        <option value="목">목</option>
-                        <option value="금">금</option>
-                        <option value="토">토</option>
-                        <option value="일">일</option>
-                    </select>
-                    <button onclick="save_bucket()" type="button" class="btn btn-outline-primary">입력</button>
+                    <h1 class="h2">Dashboard</h1>
                 </div>
-            </div>
 
-            <script>
-                function sell_by_total() {
-                    $('.line').show()
-                    $('.bar').hide()
-                    $('.chart-div').hide()
-                }
+                <div class="mybox">
+                    <div class="mybucket">
+                        <select class="form-select form-select-lg mb-3" id="menus">
+                            <option selected id='option'>판매된 메뉴를 선택하세요</option>
+                            <script>
+                                $.ajax({
+                                    type: "GET",
+                                    url: "/test/user_menu/find",
+                                    data: {},
+                                    success: function (response) {
+                                        let name = response['user_menu']                                        
 
-                function sell_by_day() {
-                    $('.line').hide()
-                    $('.bar').show()
-                    $('.chart-div').hide()
-                }
+                                        for (let i=0; i<name.length; i++){
+                                            $("#menus").append("<option value='" + (name[i]['menu']) + "'>" + (name[i]['menu']) + "</option>")
+                                        }                                        
+                                    }
+                                });
 
-                function sell_by_menu() {
-                    $('.line').hide()
-                    $('.bar').hide()
-                    $('.chart-div').show()
-                }
-            </script>
-
-            <script>
-                function save_bucket() {
-                    let menu = $('#menu').val()
-                    let day = $('#day').val()
-
-                    $.ajax({
-                        type: "POST",
-                        url: "/bucket",
-                        data: {menu_give: menu, day_give: day},
-                        success: function (response) {
-                            alert(response["msg"])
-                            window.location.reload()
-                        }
-                    });
-                }
-            </script>
-
-            <script>
-                function order_list() {
-        $.ajax({
-            type: "GET",
-            url: "/order_list/order_show",
-            data: {},
-            success: function (response){
-               let rows = response['order_list']
-                for(let i=0; i<rows.length; i++){
-                    let num = rows[i]['num']
-                    let name = rows[i]['name']
-                    let ingredient = rows[i]['ingredient']
-                    let address = rows[i]['address']
-                    let email = rows[i]['email']
-
-                    let temp_html=`
-                    <tr>
-                        <td>${num}</td>
-                        <td>${name}</td>
-                        <td>${ingredient}</td>
-                        <td>${address}</td>
-                        <td>${email}</td>
-                    </tr>`
-
-                    $('#body-bg').append(temp_html)
-
-                }
-               }
-
-        })
-    }
-
-
-
-            </script>
-
-
-
-
-            <script>
-                function reload() {
-                    $.ajax({
-                        type: "GET",
-                        url: "/",
-                        data: {},
-                        success: function (response) {
-                            window.location.reload()
-                        }
-                    });
-                }
-            </script>
-
-            <div class="btn-group me-2" id="buttons">
-                <button onclick="sell_by_day()" type="button" class="btn btn-sm btn-outline-secondary">요일별</button>
-                <button onclick="sell_by_total()" type="button" class="btn btn-sm btn-outline-secondary">요일
-                    전체
-                </button>
-                <button onclick="sell_by_menu()" type="button" class="btn btn-sm btn-outline-secondary">메뉴별</button>
-            </div>
-
-            <div class="line">
-                <div style="width:80%;">
-                    <canvas id="canvas"></canvas>
+                            </script>
+                        </select>
+                        <select class="form-select form-select-lg mb-3" id="day">
+                            <option selected id='option'>요일을 선택하세요</option>
+                            <option value="월">월</option>
+                            <option value="화">화</option>
+                            <option value="수">수</option>
+                            <option value="목">목</option>
+                            <option value="금">금</option>
+                            <option value="토">토</option>
+                            <option value="일">일</option>
+                        </select>
+                        <button onclick="save_bucket()" type="button" class="btn btn-outline-primary">입력</button>
+                    </div>
                 </div>
+
                 <script>
-                    $.ajax({
+                    function sell_by_total() {
+                        $('.line').show()
+                        $('.bar').hide()
+                        $('.chart-div').hide()
+                    }
+                    function sell_by_day() {
+                        $('.line').hide()
+                        $('.bar').show()
+                        $('.chart-div').hide()
+                    }
+                    function sell_by_menu() {
+                        $('.line').hide()
+                        $('.bar').hide()
+                        $('.chart-div').show()
+                    }
+                </script>
+
+                <script>
+                    function save_bucket() {
+                        let menu = $('#menus').val()
+                        let day = $('#day').val()
+
+                        $.ajax({
+                            type: "POST",
+                            url: "/bucket",
+                            data: { menu_give: menu, day_give: day },
+                            success: function (response) {
+                                alert(response["msg"])
+                                window.location.reload()
+                            }
+                        });
+                    }
+                </script>
+
+                <script>
+                    function reload() {
+                        $.ajax({
+                            type: "GET",
+                            url: "/",
+                            data: {},
+                            success: function (response) {
+                                window.location.reload()
+                            }
+                        });
+                    }
+                </script>
+
+                <div class="btn-group me-2" id="buttons">
+                    <button onclick="sell_by_day()" type="button" class="btn btn-sm btn-outline-secondary">요일별</button>
+                    <button onclick="sell_by_total()" type="button" class="btn btn-sm btn-outline-secondary">요일
+                        전체</button>
+                    <button onclick="sell_by_menu()" type="button" class="btn btn-sm btn-outline-secondary">메뉴별</button>
+                </div>
+                <!-- 요일별 전체 판매량 -->
+                <div class="line">
+                    <div style="width:80%;">
+                        <canvas id="canvas"></canvas>
+                    </div>
+                    <script>
+                        $.ajax({
+                            type: "GET",
+                            url: "/bucket",
+                            data: {},
+
+                            success: function (response) {
+                                let menu = response['week']                                
+
+                                new Chart(document.getElementById("canvas"), {
+                                    type: 'line',
+                                    data: {
+                                        labels: ['월', '화', '수', '목', '금', '통', '일'],
+                                        datasets: [{
+                                            label: '요일별 전체 판매량',
+                                            data: menu,
+                                            borderColor: "rgba(255, 201, 14, 1)",
+                                            backgroundColor: "rgba(255, 201, 14, 0.3)",
+                                            fill: true,
+                                            lineTension: 0
+                                        }]
+                                    },
+                                    options: {
+                                        responsive: true,
+                                        title: {
+                                            display: false,
+                                            text: '라인 차트 테스트'
+                                        },
+                                        tooltips: {
+                                            mode: 'index',
+                                            intersect: false,
+                                        },
+                                        hover: {
+                                            mode: 'nearest',
+                                            intersect: true
+                                        },
+                                        scales: {
+                                            xAxes: [{
+                                                display: true,
+                                                scaleLabel: {
+                                                    display: false,
+                                                    labelString: 'x축'
+                                                }
+                                            }],
+                                            yAxes: [{
+                                                display: true,
+                                                ticks: {
+                                                    suggestedMin: 0,
+                                                },
+                                                scaleLabel: {
+                                                    display: true,
+                                                    labelString: '총판매량'
+                                                }
+                                            }]
+                                        }
+                                    }
+                                });
+
+                            }
+                        });
+
+                    </script>
+                </div>
+
+                <!-- 메뉴별 전체 판매량 -->
+                <div class="chart-div">
+                    <canvas id="pieChartCanvas" width="450" height="450"></canvas>
+                </div>
+
+                <script>
+                    window.onload = function () {
+                        $.ajax({
+                            type: "GET",
+                            url: "/bucket",
+                            data: {},
+                            
+                            success: function (response) {
+                                console.log(response['menu_num'])
+                                console.log(response['menu_name'])
+                                let menu_name = response['menu_name']
+                                let menu = response['menu_num']
+                                pieChartDraw(menu,menu_name);
+                            }
+                        })
+                    }
+                    let pieChartDraw = function (menu,menu_name) {
+                        let ctx = document.getElementById('pieChartCanvas').getContext('2d');
+
+                        window.pieChart = new Chart(ctx, {
+                            type: 'pie',
+                            data: {
+                                labels: menu_name,
+                                datasets: [{
+                                    data: menu,
+                                    backgroundColor: ["#3e95cd", "#8e5ea2", "#e8c3b9", "#c45850", "#45ba47", "#c4a533", "#e0d834", "#db34e0"]
+                                }]
+                            },
+                            options: {
+                                responsive: false
+                            }
+                        });
+                    };
+                </script>
+
+                <!--요일별 판매량 그래프-->
+                <div class="bar">
+                    <div style="width:70%;margin:auto">
+                        <canvas id="line-chart"></canvas>
+                    </div>
+                    <script>
+
+                        $.ajax({
+                            type: "GET",
+                            url: "/bucket",
+                            data: {},
+
+                            success: function (response) {
+                                var menu = response['menu']
+                                var colorList = ["#3e95cd", "#8e5ea2", "#e8c3b9", "#c45850", "#45ba47", "#c4a533", "#e0d834", "#db34e0"]
+                                var i = 0
+                                var menus = []
+
+                                for (i = 0; i < menu.length; i++) {
+                                    menus.push({
+                                        data: [menu[i]['Day']['월'], menu[i]['Day']['화'], menu[i]['Day']['수'], menu[i]['Day']['목'], menu[i]['Day']['금'], menu[i]['Day']['토'], menu[i]['Day']['일']],
+                                        label: menu[i]['name'],
+                                        borderColor: colorList[i],
+                                        fill: false
+                                    })
+                                }                                
+
+                                new Chart(document.getElementById("line-chart"), {
+                                    type: 'line',
+                                    data: {
+                                        labels: ['월', '화', '수', '목', '금', '토', '일'],
+                                        datasets: menus
+                                    },
+                                    options: {
+                                        title: {
+                                            display: true,
+                                            text: '요일별 메뉴 판매량'
+                                        }
+                                    }
+                                });
+                            }
+                        });
+                    </script>
+                </div>
+
+
+                <!--재료 수량 그래프-->
+                <div style="width:70%;margin:auto;padding-top: 20px;">
+                    <canvas id="myChart"></canvas>
+                </div>
+                
+                <script>
+                    $.ajax({                        
+                        type: "POST",
+                        url: "/bucket/find",
+                        data: {},
+                        success: function (response) {
+                            let ingredient = response['ingredient']
+                            console.log(ingredient)
+                            for (let i=0; i<ingredient.length; i++){
+                                for (let i=0; i<Object.keys(ingredient[i]).length-2; i++){
+                                    console.log(Object.values(ingredient[i]))
+                                }                                
+                            }
+                        }
+                    })
+
+                    $.ajax({                        
                         type: "GET",
                         url: "/bucket",
                         data: {},
-
                         success: function (response) {
-                            let menu = response['week']
-
-                            new Chart(document.getElementById("canvas"), {
-                                type: 'line',
+                            let ingredient = response['ingredient']
+                            var name_list =[]
+                            var num_list =[]
+                            // console.log(ingredient)
+                            // console.log('asdffg')
+                            for (let i=0; i<ingredient.length; i++){
+                                name_list.push(ingredient[i]['name'])
+                                num_list.push(ingredient[i]['num'])
+                                console.log(ingredient[i])
+                            }
+                            // console.log(name_list)
+                            // for (let i=0; i<ingredient.length; i++){
+                            //     for (let i=0; i<Object.keys(ingredient[i]).length-2; i++){
+                            //         console.log(Object.values(ingredient[i]))
+                            //     }                                
+                            // }
+                            const ctx = document.getElementById('myChart').getContext('2d');
+                            const myChart = new Chart(ctx, {
+                                type: 'bar',
                                 data: {
-                                    labels: ['월', '화', '수', '목', '금', '통', '일'],
+                                    labels: name_list,
                                     datasets: [{
-                                        label: '요일별 전체 판매량',
-                                        data: [menu[0], menu[1], menu[2], menu[3], menu[4], menu[5], menu[6], menu[7]],
-                                        borderColor: "rgba(255, 201, 14, 1)",
-                                        backgroundColor: "rgba(255, 201, 14, 0.3)",
-                                        fill: true,
-                                        lineTension: 0
+                                        label: '재료량',
+                                        data: num_list,
+                                        backgroundColor:["#3e95cd", "#8e5ea2", "#e8c3b9", "#c45850", "#45ba47", "#c4a533", "#e0d834", "#db34e0"],
+                                        borderWidth: 1
                                     }]
                                 },
                                 options: {
-                                    responsive: true,
-                                    title: {
-                                        display: false,
-                                        text: '라인 차트 테스트'
-                                    },
-                                    tooltips: {
-                                        mode: 'index',
-                                        intersect: false,
-                                    },
-                                    hover: {
-                                        mode: 'nearest',
-                                        intersect: true
-                                    },
                                     scales: {
-                                        xAxes: [{
-                                            display: true,
-                                            scaleLabel: {
-                                                display: false,
-                                                labelString: 'x축'
-                                            }
-                                        }],
                                         yAxes: [{
-                                            display: true,
                                             ticks: {
-                                                suggestedMin: 0,
-                                            },
-                                            scaleLabel: {
-                                                display: true,
-                                                labelString: '총판매량'
+                                                beginAtZero: true,
                                             }
                                         }]
                                     }
                                 }
                             });
-
-                        }
-                    });
-
-                </script>
-            </div>
-
-            <!-- 메뉴별 전체 판매량 -->
-            <div class="chart-div">
-                <canvas id="pieChartCanvas" width="450" height="450"></canvas>
-            </div>
-
-            <script>
-                window.onload = function () {
-                    $.ajax({
-                        type: "GET",
-                        url: "/bucket",
-                        data: {},
-
-                        success: function (response) {
-                            let menu = response['menu_num']
-                            let menu_list = response['menu']
-                            pieChartDraw(menu, menu_list);
-                        }
-                    })
-                }
-
-                let pieChartDraw = function (menu, menu_list) {
-                    console.log(menu_list);
-                    let ctx = document.getElementById('pieChartCanvas').getContext('2d');
-                    window.pieChart = new Chart(ctx, {
-                        type: 'pie',
-                        data: {
-                            labels: [menu_list[0]['menu'], menu_list[1]['menu'], menu_list[2]['menu'], menu_list[3]['menu']],
-                            datasets: [{
-                                data: menu,
-                                backgroundColor: ['rgb(255, 99, 132, 0.5)', 'rgb(255, 159, 64, 0.5)', 'rgb(255, 205, 86, 0.5)', 'rgb(75, 192, 192, 0.5)']
-                            }]
-                        },
-                        options: {
-                            responsive: false
-                        }
-                    });
-                };
-
-            </script>
-
-            <!--요일별 판매량 그래프-->
-            <div class="bar">
-                <div style="width:70%;margin:auto">
-                    <canvas id="line-chart"></canvas>
-                </div>
-                <script>
-
-                    $.ajax({
-                        type: "GET",
-                        url: "/bucket",
-                        data: {},
-
-                        success: function (response) {
-                            let menu = response['menu']
-
-                            new Chart(document.getElementById("line-chart"), {
-                                type: 'line',
-                                data: {
-                                    labels: ['월', '화', '수', '목', '금', '토', '일'],
-                                    datasets: [{
-                                        data: [menu[0]['Day']['월'], menu[0]['Day']['화'], menu[0]['Day']['수'], menu[0]['Day']['목'], menu[0]['Day']['금'], menu[0]['Day']['토'], menu[0]['Day']['일']],
-                                        label: menu[0]['menu'],
-                                        borderColor: "#3e95cd",
-                                        fill: false
-                                    }, {
-                                        data: [menu[1]['Day']['월'], menu[1]['Day']['화'], menu[1]['Day']['수'], menu[1]['Day']['목'], menu[1]['Day']['금'], menu[1]['Day']['토'], menu[1]['Day']['일']],
-                                        label: menu[1]['menu'],
-                                        borderColor: "#8e5ea2",
-                                        fill: false
-                                    }, {
-                                        data: [menu[2]['Day']['월'], menu[2]['Day']['화'], menu[2]['Day']['수'], menu[2]['Day']['목'], menu[2]['Day']['금'], menu[2]['Day']['토'], menu[2]['Day']['일']],
-                                        label: menu[2]['menu'],
-                                        borderColor: "#e8c3b9",
-                                        fill: false
-                                    }, {
-                                        data: [menu[3]['Day']['월'], menu[3]['Day']['화'], menu[3]['Day']['수'], menu[3]['Day']['목'], menu[3]['Day']['금'], menu[3]['Day']['토'], menu[3]['Day']['일']],
-                                        label: menu[3]['menu'],
-                                        borderColor: "#c45850",
-                                        fill: false
-                                    }
-                                    ]
-                                },
-                                options: {
-                                    title: {
-                                        display: true,
-                                        text: '요일별 메뉴 판매량'
-                                    }
-                                }
-                            });
                         }
                     });
                 </script>
-            </div>
-
-            <!--재료 수량 그래프-->
-            <div style="width:70%;margin:auto;padding-top: 20px;">
-                <canvas id="myChart"></canvas>
-            </div>
-
-            <script>
-                $.ajax({
-                    type: "GET",
-                    url: "/bucket",
-                    data: {},
-                    success: function (response) {
-                        let ingredient = response['ingredient']
-
-                        const ctx = document.getElementById('myChart').getContext('2d');
-                        const myChart = new Chart(ctx, {
-                            type: 'bar',
-                            data: {
-                                labels: ['마늘', '양파', '대파', '소금', '설탕'],
-                                datasets: [{
-                                    label: '재료량',
-                                    data: [ingredient[0]['num'], ingredient[1]['num'], ingredient[2]['num'], ingredient[3]['num'], ingredient[4]['num']],
-                                    backgroundColor: [
-                                        'rgba(255, 99, 132, 0.2)',
-                                        'rgba(54, 162, 235, 0.2)',
-                                        'rgba(255, 206, 86, 0.2)',
-                                        'rgba(75, 192, 192, 0.2)',
-                                        'rgba(153, 102, 255, 0.2)',
-                                        'rgba(255, 159, 64, 0.2)'
-                                    ],
-                                    borderColor: [
-                                        'rgba(255, 99, 132, 1)',
-                                        'rgba(54, 162, 235, 1)',
-                                        'rgba(255, 206, 86, 1)',
-                                        'rgba(75, 192, 192, 1)',
-                                        'rgba(153, 102, 255, 1)',
-                                        'rgba(255, 159, 64, 1)'
-                                    ],
-                                    borderWidth: 1
-                                }]
-                            },
-                            options: {
-                                scales: {
-                                    yAxes: [{
-                                        ticks: {
-                                            beginAtZero: true,
-                                        }
-                                    }]
-                                }
-                            }
-                        });
-                    }
-                });
-            </script>
-        </main>
+            </main>
+        </div>
     </div>
-</div>
 
 
-<script src="../static/dists/js/bootstrap.bundle.min.js"></script>
+    <script src="../static/dists/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>
