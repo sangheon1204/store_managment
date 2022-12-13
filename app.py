@@ -526,8 +526,13 @@ def ingredients_enroll():
          },
         True
     )
-    #ingredients_with_count DB에도 추가
-    db.ingredients_with_count.insert_one({'name':ingredients_receive,'num':0})
+    
+    ingredient = list(db.ingredients_with_count.find({'name':ingredients_receive}))
+
+    #만약 처음 등록하는 재료라면
+    if (len(ingredient)) ==0:
+        #ingredients_with_count DB에도 추가
+        db.ingredients_with_count.insert_one({'name':ingredients_receive,'num':0})
 
     return jsonify({"msg": "등록 완료"})
 
