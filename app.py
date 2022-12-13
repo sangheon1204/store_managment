@@ -534,6 +534,7 @@ def menu_delete():
     menu = request.form['menu_give']
     payload = login_check()
     db.menu_with_ingredients.delete_one({"user_id": payload['id'], "menu": menu})
+    db.menus.delete_one({"name": menu})
     return jsonify({"msg": "삭제 완료"})
 
 
