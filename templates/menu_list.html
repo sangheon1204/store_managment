@@ -14,7 +14,7 @@
     {%include 'COMMON/font.html'%}
 </head>
 <script>
-    $(document).ready(function(){
+    $(document).ready(function(){ 
         menu_list();
 
     });
@@ -63,11 +63,12 @@
             url: "/menu_list/menu_show",
             data: {},
             success: function (response) {
+                $('#card-body').empty()
                 let rows = response['menu_show']
                 for (let i = 0;i<rows.length;i++) {
                     let menu_title = rows[i]['menu'];
                     let ingre_arr = new Array();
-                    for (let j=0; j<Object.keys(rows[i]).length-4;j++) {
+                    for (let j=0; j<Object.keys(rows[i]).length-2;j++) {
                         ingre_arr[j] = rows[i][`ingredient_${j}`];
                     }
                     let temp_html = '';

@@ -7,11 +7,12 @@
   <meta name="description" content="">
   <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
   <meta name="generator" content="Hugo 0.88.1">
-  <title>Checkout example · Bootstrap v5.1</title>
+  <title>주문하기</title>
 
   <link rel="canonical" href="https://getbootstrap.com/docs/5.1/examples/checkout/">
 
-
+  {%include 'COMMON/head.html'%}
+  {%include 'COMMON/font.html'%}
 
   <!-- Bootstrap core CSS -->
   <link href="../static/dists/css/bootstrap.min.css" rel="stylesheet">
@@ -40,172 +41,176 @@
   <link href="../static/form-validation.css" rel="stylesheet">
 
 </head>
+<script>
+
+  $.ajax({
+    type: 'GET',
+    url: '/bucket',
+    data: {},
+    success: function (response) {
+      let rows = response['ingredient']
+      let count = 0
+      for (let i = 0; i < rows.length; i++) {
+        count++
+        let name = rows[i]['name']
+        let num = rows[i]['num']
+
+        let temp_html = `
+                          <li class="list-group-item d-flex justify-content-between lh-sm">
+                            <div>
+                              <h6 class="my-0" id="garlic">&nbsp;&nbsp;${name}</h6>
+                              <!-- <small class="text-muted">Brief description</small> -->
+                            </div>
+                            <span class="text-muted">${num}개&nbsp;&nbsp;&nbsp;</span>
+                          </li>`
+
+        $('#ingre-list').append(temp_html)
+      }
+      $('#count').text(count+"종류")
+    }
+  })
+
+</script>
 
 <body class="bg-light">
+  {%include 'COMMON/header.html'%}
+  <div class="container-fluid">
+    <div class="row">
+      {%include 'COMMON/sideBar.html'%}
+      <div class="container">
+        <main>
+          <div class="py-5 text-center">
+            <img class="d-block mx-auto mb-4" src="../static/brand/food-dinner-icon.svg" alt="" width="72" height="57">
+            <h2 style='color:#0055ff'>주문하기</h2>
+          </div>
 
-  <div class="container">
-    <main>
-      <div class="py-5 text-center">
-        <img class="d-block mx-auto mb-4" src="../static/brand/food-dinner-icon.svg" alt="" width="72" height="57">
-        <h2 style='color:#0055ff'>주문하기</h2>
-      </div>
+          <div class="row g-5">
+            <div class="col-md-5 col-lg-4 order-md-last">
+              <h4 class="d-flex justify-content-between align-items-center mb-3">
+                <span class="text-primary">Your Ingredient</span>
+                <span class="badge bg-primary rounded-pill" id="count"></span>
+              </h4>
+              <ul class="list-group mb-3" id="ingre-list">
+                <!--  -->
+              </ul>
+            </div>
+            <div class="col-md-7 col-lg-8">
+              <h4 class="mb-3">주문정보를 입력하세요</h4>
+              <form class="needs-validation" novalidate action="/order" method="POST">
+                <div class="row g-3">
 
-      <div class="row g-5">
-        <div class="col-md-5 col-lg-4 order-md-last">
-          <h4 class="d-flex justify-content-between align-items-center mb-3">
-            <span class="text-primary">Your Ingredient</span>
-            <span class="badge bg-primary rounded-pill">&nbsp;&nbsp;5&nbsp;&nbsp;</span>
-          </h4>
-          <ul class="list-group mb-3">
-            <li class="list-group-item d-flex justify-content-between lh-sm">
-              <div>
-                <h6 class="my-0">&nbsp;&nbsp;&nbsp;&nbsp;마늘</h6>
-                <!-- <small class="text-muted">Brief description</small> -->
-              </div>
-              <span class="text-muted">46 개&nbsp;&nbsp;&nbsp;</span>
-            </li>
-            <li class="list-group-item d-flex justify-content-between lh-sm">
-              <div>
-                <h6 class="my-0">&nbsp;&nbsp;&nbsp;&nbsp;양파</h6>
-                <!-- <small class="text-muted">Brief description</small> -->
-              </div>
-              <span class="text-muted">45 개&nbsp;&nbsp;&nbsp;</span>
-            </li>
-            <li class="list-group-item d-flex justify-content-between lh-sm">
-              <div>
-                <h6 class="my-0">&nbsp;&nbsp;&nbsp;&nbsp;대파</h6>
-                <!-- <small class="text-muted">Brief description</small> -->
-              </div>
-              <span class="text-muted">40 개&nbsp;&nbsp;&nbsp;</span>
-            </li>
-            <li class="list-group-item d-flex justify-content-between lh-sm">
-              <div>
-                <h6 class="my-0">&nbsp;&nbsp;&nbsp;&nbsp;소금</h6>
-                <!-- <small class="text-muted">Brief description</small> -->
-              </div>
-              <span class="text-muted">30 개&nbsp;&nbsp;&nbsp;</span>
-            </li>
-            <li class="list-group-item d-flex justify-content-between lh-sm">
-              <div>
-                <h6 class="my-0">&nbsp;&nbsp;&nbsp;&nbsp;설탕</h6>
-                <!-- <small class="text-muted">Brief description</small> -->
-              </div>
-              <span class="text-muted">40 개&nbsp;&nbsp;&nbsp;</span>
-            </li>
+                  <div class="col-12">
+                    <label for="username" class="form-label">이름</label>
+                    <div class="input-group has-validation">
+                      <div class="input-group">
+                        <input type="text" required name="name" class="form-control" placeholder="성과 이름을 입력하세요">
+                      </div>
+                      <div class="invalid-feedback">
+                        Your username is required.
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="col-12">
+                    <label for="username" class="form-label">식당이름</label>
+                    <div class="input-group has-validation">
+                      <div class="input-group">
+                        <input type="text" required name="store_name" class="form-control" placeholder="성과 이름을 입력하세요">
+                      </div>
+                      <div class="invalid-feedback">
+                        Your username is required.
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="col-12">
+                    <label for="email" class="form-label">이메일 주소</label>
+                    <input type="email" required name="email" class="form-control" id="email"
+                      placeholder="ex) you@example.com">
+                    <div class="invalid-feedback">
+                      Please enter a valid email address for shipping updates.
+                    </div>
+                  </div>
+
+                  <div class="col-12">
+                    <label for="address" class="form-label">주소</label>
+                    <input type="text" required name="address" class="form-control" id="address"
+                      placeholder="1234 Main St" required>
+                    <div class="invalid-feedback">
+                      Please enter your shipping address.
+                    </div>
+                  </div>
+
+                  <div class="col-md-5">
+                    <label for="country" class="form-label">재료</label>
+                    <select class="form-select form-select-lg mb-3" id="country" required name="ingredient">
+                      <option selected id='option'>선택</option>
+                      <script>
+                        $.ajax({
+                          type: "GET",
+                          url: "/order/find",
+                          data: {},
+                          success: function (response) {
+                            let name = response['ingre']
+                            console.log(response)
+                            for (let i = 0; i < name.length; i++) {
+                              $("#country").append("<option value='" + (name[i]['name']) + "'>" + (name[i]['name']) + "</option>")
+                            }
+                          }
+                        });
+                      </script>
+                    </select>
+                    </select>
+                  </div>
+
+                  <div class="col-md-4">
+                    <label for="state" class="form-label">수량</label>
+                    <select class="form-select form-select-lg mb-3" id="ccc" required name="num">
+                      <option value="">선택</option>
+                      <option>1</option>
+                      <option>2</option>
+                      <option>3</option>
+                      <option>4</option>
+                      <option>5</option>
+                      <option>6</option>
+                      <option>7</option>
+                      <option>8</option>
+                      <option>9</option>
+                      <option>10</option>
+                    </select>
+                  </div>
+
+                </div>
+
+                <hr class="my-4">
+
+                <div class="form-check">
+                  <input type="checkbox" class="form-check-input" id="same-address">
+                  <label class="form-check-label" for="same-address">주문정보가 이상이 없습니다</label>
+                </div>
+
+                <hr class="my-4">
+
+                <button class="w-100 btn btn-primary btn-lg" type="submit">주문하기</button>
+              </form>
+            </div>
+          </div>
+        </main>
+
+        <footer class="my-5 pt-5 text-muted text-center text-small">
+          <p class="mb-1">&copy; Made by team2</p>
+          <ul class="list-inline">
+            <li class="list-inline-item"><a
+                href="https://handy-adapter-84d.notion.site/dd7b71e9f43e40078e5d7417ee44bdec?v=1e6ae2a9472f4d62ae55e16bce2d9e99"
+                target="_blank">notion</a></li>
+            <li class="list-inline-item"><a href="https://github.com/sangheon1204/store_managment"
+                target="_blank">github</a></li>
           </ul>
-        </div>
-        <div class="col-md-7 col-lg-8">
-          <h4 class="mb-3">주문정보를 입력하세요</h4>
-          <form class="needs-validation" novalidate action="/order" method="POST">
-            <div class="row g-3">
-
-              <div class="col-12">
-                <label for="username" class="form-label">이름</label>
-                <div class="input-group has-validation">
-                  <div class="input-group">
-                    <input type="text" required name="name" class="form-control" placeholder="성과 이름을 입력하세요">
-                  </div>
-                  <div class="invalid-feedback">
-                    Your username is required.
-                  </div>
-                </div>
-              </div>
-
-              <div class="col-12">
-                <label for="username" class="form-label">식당이름</label>
-                <div class="input-group has-validation">
-                  <div class="input-group">
-                    <input type="text" required name="store_name" class="form-control" placeholder="성과 이름을 입력하세요">
-                  </div>
-                  <div class="invalid-feedback">
-                    Your username is required.
-                  </div>
-                </div>
-              </div>
-
-              <div class="col-12">
-                <label for="email" class="form-label">이메일 주소</label>
-                <input type="email" required name="email" class="form-control" id="email"
-                  placeholder="ex) you@example.com">
-                <div class="invalid-feedback">
-                  Please enter a valid email address for shipping updates.
-                </div>
-              </div>
-
-              <div class="col-12">
-                <label for="address" class="form-label">주소</label>
-                <input type="text" required name="address" class="form-control" id="address" placeholder="1234 Main St"
-                  required>
-                <div class="invalid-feedback">
-                  Please enter your shipping address.
-                </div>
-              </div>
-
-              <div class="col-md-5">
-                <label for="country" class="form-label">재료</label>
-                <select required name="ingredient" class="form-select" id="country" required>
-                  <option value="">선택</option>
-                  <option>양파</option>
-                  <option>대파</option>
-                  <option>마늘</option>
-                  <option>소금</option>
-                  <option>설탕</option>
-                </select>
-                <div class="invalid-feedback">
-                  Please select a valid country.
-                </div>
-              </div>
-
-              <div class="col-md-4">
-                <label for="state" class="form-label">수량</label>
-                <select required name="num" class="form-select" id="state" required>
-                  <option value="">선택</option>
-                  <option>1</option>
-                  <option>2</option>
-                  <option>3</option>
-                  <option>4</option>
-                  <option>5</option>
-                  <option>6</option>
-                  <option>7</option>
-                  <option>8</option>
-                  <option>9</option>
-                  <option>10</option>
-                </select>
-                <div class="invalid-feedback">
-                  Please provide a valid state.
-                </div>
-              </div>
-
-            </div>
-
-            <hr class="my-4">
-
-            <div class="form-check">
-              <input type="checkbox" class="form-check-input" id="same-address">
-              <label class="form-check-label" for="same-address">주문정보가 이상이 없습니다</label>
-            </div>
-
-            <hr class="my-4">
-
-            <button class="w-100 btn btn-primary btn-lg" type="submit">주문하기</button>
-          </form>
-        </div>
+        </footer>
       </div>
-    </main>
 
-    <footer class="my-5 pt-5 text-muted text-center text-small">
-      <p class="mb-1">&copy; Made by team2</p>
-      <ul class="list-inline">
-        <li class="list-inline-item"><a
-            href="https://handy-adapter-84d.notion.site/dd7b71e9f43e40078e5d7417ee44bdec?v=1e6ae2a9472f4d62ae55e16bce2d9e99"
-            target="_blank">notion</a></li>
-        <li class="list-inline-item"><a href="https://github.com/sangheon1204/store_managment"
-            target="_blank">github</a></li>
-      </ul>
-    </footer>
+    </div>
   </div>
-
-
   <script src="../static/dists/js/bootstrap.bundle.min.js"></script>
 
   <script src="../static/form-validation.js"></script>
